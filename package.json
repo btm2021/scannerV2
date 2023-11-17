@@ -1,0 +1,27 @@
+{
+  "name": "scannerV2",
+  "version": "1.0.0",
+  "description": "My gnarly Nuxt.js project",
+  "author": "btm2021",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@hscmap/vue-window": "^2.4.4",
+    "@nuxtjs/axios": "^5.3.6",
+    "bootstrap": "^4.6.1",
+    "bootstrap-vue": "^2.21.2",
+    "klinecharts": "^9.6.0",
+    "lightweight-charts": "^4.1.1",
+    "multi-exchange-datafeeds": "^1.1.2",
+    "nuxt": "^2.15.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/moment": "^1.6.1",
+    "nuxt-vite": "^0.3.5"
+  }
+}

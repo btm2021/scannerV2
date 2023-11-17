@@ -1,0 +1,34 @@
+//@version=4
+study(title="Pivotbtm ", shorttitle="Pivots HLbtm", overlay=true)
+
+//INPUTS
+srcH = high 
+srcL = low
+lengt = input(title="", type=input.integer, defval=12, inline="length")
+
+
+// Get High and Low Pivot Points
+ph = pivothigh(high, lengt, lengt)
+pl = pivotlow(low, lengt, lengt)
+
+// Higher Highs, Lower Highs, Higher Lows, Lower Lows 
+valuewhen_1 = valuewhen(ph, srcH[lengt], 1)
+valuewhen_2 = valuewhen(ph, srcH[lengt], 0)
+higherhigh = na(ph) ? na : valuewhen_1 < valuewhen_2 ? ph : na
+valuewhen_3 = valuewhen(ph, srcH[lengt], 1)
+valuewhen_4 = valuewhen(ph, srcH[lengt], 0)
+lowerhigh = na(ph) ? na : valuewhen_3 > valuewhen_4 ? ph : na
+valuewhen_5 = valuewhen(pl, srcL[lengt], 1)
+valuewhen_6 = valuewhen(pl, srcL[lengt ], 0)
+higherlow = na(pl) ? na : valuewhen_5 < valuewhen_6 ? pl : na
+valuewhen_7 = valuewhen(pl, srcL[lengt], 1)
+valuewhen_8 = valuewhen(pl, srcL[lengt ], 0)
+lowerlow = na(pl) ? na : valuewhen_7 > valuewhen_8 ? pl : na
+
+
+
+plotshape( higherhigh, title='HH', location=location.abovebar, text="HH", offset=-lengt)
+plotshape( higherlow , title='HL', location=location.belowbar, text="HL", offset=-lengt)
+plotshape( lowerhigh , title='LH', location=location.abovebar,text="LH", offset=-lengt)
+plotshape( lowerlow , title='LL', location=location.belowbar, text="LL",  offset=-lengt)
+

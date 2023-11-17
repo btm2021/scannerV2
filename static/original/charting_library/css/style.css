@@ -1,0 +1,23 @@
+.chart-page .apply-common-tooltip, .chart-page .button.undo, .chart-page .button.redo,
+.chart-page .symbol-edit-widget .symbol-edit-inputspacer input.symbol-edit {
+    background: rgba(30,30,30,0.5) !important;
+    /* background: blue !important; */
+    border-color: #444 !important;
+    color: #fff!important;
+}
+body, .chart-controls-bar, #footer-chart-panel{
+    background-color: rgba(30,30,30,0.5) !important;
+}
+.chart-page .chart-container {
+    background: none !important;
+    border-color: red !important; 
+}
+.drawingToolbar-2CoOuCv8-{
+    background-color: rgba(30,30,30,0.5);
+}
+.separator-3cgsM4c1-{
+    background-color: #666;
+}
+a.button.getimage.apply-common-tooltip {
+    background-color: #97999d !important;
+}
