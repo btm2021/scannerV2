@@ -8,77 +8,47 @@
       
 <script>
 import * as klinecharts from "klinecharts";
-// Helper function to find the highest value in a range of data points
-function calculateXCoordinate(index, chartDimensions) {
-  // Implement logic to calculate x coordinate
-  // This is a placeholder function
-  return index * (chartDimensions.width / chartDimensions.totalDataPoints);
-}
+function pivotLow(data, leftBars, rightBars) {
+    let pivotLows = [];
 
-function calculateYCoordinate(value, chartDimensions) {
-  // Implement logic to calculate y coordinate
-  // This is a placeholder function
-  const range = chartDimensions.maxPrice - chartDimensions.minPrice;
-  return (
-    chartDimensions.height -
-    ((value - chartDimensions.minPrice) / range) * chartDimensions.height
-  );
-}
+    for (let i = leftBars; i < data.length - rightBars; i++) {
+        let isPivotLow = true;
 
-function highest(data, key) {
-  let highestValue = -Infinity;
-  data.forEach((item) => {
-    if (item[key] > highestValue) highestValue = item[key];
-  });
-  return highestValue;
-}
+        for (let j = i - leftBars; j <= i + rightBars; j++) {
+            if (j !== i && data[j].low <= data[i].low) {
+                isPivotLow = false;
+                break;
+            }
+        }
 
-// Helper function to find the lowest value in a range of data points
-function lowest(data, key) {
-  let lowestValue = Infinity;
-  data.forEach((item) => {
-    if (item[key] < lowestValue) lowestValue = item[key];
-  });
-  return lowestValue;
-}
-
-function isPivotHigh(data, index, lookback) {
-  let currentHigh = data[index].high;
-  for (let i = 1; i <= lookback; i++) {
-    if (index - i < 0 || index + i >= data.length) {
-      // Not enough data to determine if pivot high
-      return false;
+        if (isPivotLow) {
+            pivotLows.push({ index: i, low: data[i].low });
+        }
     }
-    if (
-      data[index - i].high >= currentHigh ||
-      data[index + i].high >= currentHigh
-    ) {
-      // There is a higher or equal high within the lookback period on either side
-      return false;
+
+    return pivotLows;
+}
+function pivotHigh(data, leftBars, rightBars) {
+    let pivotHighs = [];
+
+    for (let i = leftBars; i < data.length - rightBars; i++) {
+        let isPivotHigh = true;
+
+        for (let j = i - leftBars; j <= i + rightBars; j++) {
+            if (j !== i && data[j].high >= data[i].high) {
+                isPivotHigh = false;
+                break;
+            }
+        }
+
+        if (isPivotHigh) {
+            pivotHighs.push({ index: i, high: data[i].high });
+        }
     }
-  }
-  // Current high is a pivot high
-  return true;
+
+    return pivotHighs;
 }
 
-function isPivotLow(data, index, lookback) {
-  let currentLow = data[index].low;
-  for (let i = 1; i <= lookback; i++) {
-    if (index - i < 0 || index + i >= data.length) {
-      // Not enough data to determine if pivot low
-      return false;
-    }
-    if (
-      data[index - i].low <= currentLow ||
-      data[index + i].low <= currentLow
-    ) {
-      // There is a lower or equal low within the lookback period on either side
-      return false;
-    }
-  }
-  // Current low is a pivot low
-  return true;
-}
 var findHL = {
   name: "pp",
   shortName: "pp",
@@ -90,94 +60,20 @@ var findHL = {
     { key: "ll", title: "LL: ", type: "text" },
     { key: "lh", title: "LH: ", type: "text" },
   ],
-  calc: (kLineDataList, { calcParams }) => {
-    const length = calcParams[0];
-    let results = [];
-
-    for (let i = length; i < kLineDataList.length - length; i++) {
-      let hh = null,
-        hl = null,
-        ll = null,
-        lh = null;
-      let currentHigh = kLineDataList[i].high;
-      let currentLow = kLineDataList[i].low;
-      let isHH = true,
-        isHL = true,
-        isLL = true,
-        isLH = true;
-
-      // [Existing logic for HH, HL, LL, LH detection]
-
-      // Add text labels and position
-      if (isHH) hh = { text: "HH", position: "above" };
-      if (isHL) hl = { text: "HL", position: "above" };
-      if (isLL) ll = { text: "LL", position: "below" };
-      if (isLH) lh = { text: "LH", position: "below" };
-
-      results.push({ hh, hl, ll, lh });
+  calc: (data, { calcParams }) => {
+    if(data.length>0){
+      const length = calcParams[0];
+   //let ph= getPivotHigh(data, length,length);
+   let pl= pivotLow(data, length,length);
+   let ph= pivotHigh(data, length,length);
+   debugger
+    console.log(ph,pl)
+   return {}
     }
+   return {}
 
-    return results;
   },
-  // calc: (kLineDataList, { calcParams }) => {
-  //   const length = calcParams[0];
-  //   let results = [];
-
-  //   for (let i = length; i < kLineDataList.length - length; i++) {
-  //     let hh = null,
-  //       hl = null,
-  //       ll = null,
-  //       lh = null;
-  //     let currentHigh = kLineDataList[i].high;
-  //     let currentLow = kLineDataList[i].low;
-  //     let isHH = true,
-  //       isHL = true,
-  //       isLL = true,
-  //       isLH = true;
-
-  //     // Check for Higher High (HH)
-  //     for (let j = 1; j <= length; j++) {
-  //       if (
-  //         currentHigh <= kLineDataList[i - j].high ||
-  //         currentHigh <= kLineDataList[i + j].high
-  //       ) {
-  //         isHH = false;
-  //         break;
-  //       }
-  //     }
-
-  //     // Check for Lower Low (LL)
-  //     for (let j = 1; j <= length; j++) {
-  //       if (
-  //         currentLow >= kLineDataList[i - j].low ||
-  //         currentLow >= kLineDataList[i + j].low
-  //       ) {
-  //         isLL = false;
-  //         break;
-  //       }
-  //     }
-
-  //     // Check for Higher Low (HL) and Lower High (LH)
-  //     if (i > 1 && i < kLineDataList.length - 1) {
-  //       let prevLow = kLineDataList[i - 1].low;
-  //       let nextLow = kLineDataList[i + 1].low;
-  //       let prevHigh = kLineDataList[i - 1].high;
-  //       let nextHigh = kLineDataList[i + 1].high;
-
-  //       isHL = currentLow > prevLow && currentLow > nextLow;
-  //       isLH = currentHigh < prevHigh && currentHigh < nextHigh;
-  //     }
-
-  //     if (isHH) hh = currentHigh;
-  //     if (isLL) ll = currentLow;
-  //     if (isHL) hl = currentLow;
-  //     if (isLH) lh = currentHigh;
-
-  //     results.push({ hh, hl, ll, lh });
-  //   }
-
-  //   return results;
-  // },
+  
 };
 var smcIndicator1 = {
   name: "SMC1",
@@ -771,78 +667,7 @@ var donchianIndicator = {
     return result;
   },
 };
-// var supres = {
-//   name: "supres",
-//   series: "price",
-//   calcParams: [15, 15, 20],
-//   figures: [
-//     {
-//       key: "resistance",
-//       title: "Resistant",
-//       type: "circle",
-//       styles: () => {
-//         return {
-//           color: "red",
-//         };
-//       },
-//     },
-//     {
-//       key: "support",
-//       title: "Support",
-//       type: "circle",
-//       styles: () => {
-//         return {
-//           color: "blue",
-//         };
-//       },
-//     },
-//   ],
-//   calc: (kLineDataList, { calcParams }) => {
-//     const result = new Array(kLineDataList.length).fill(null).map(() => ({
-//       resistance: null,
-//       support: null,
-//     }));
 
-//     let leftBar = calcParams[0];
-//     let rightBar = calcParams[1];
-//     let volumeThreshold = calcParams[2];
-//     kLineDataList.forEach((kLineData, index) => {
-//       if (index >= leftBar && index < kLineDataList.length - rightBar) {
-//         const leftIndex = index - leftBar;
-//         const rightIndex = index + rightBar + 1;
-//         const highSet = kLineDataList.slice(leftIndex, rightIndex);
-//         const lowSet = kLineDataList.slice(leftIndex, rightIndex);
-
-//         const highestPoint = highest(highSet, "high");
-//         const lowestPoint = lowest(lowSet, "low");
-
-//         // Check if the current bar is a pivot high and volume is above threshold
-//         if (
-//           kLineData.high === highestPoint &&
-//           kLineData.volume > volumeThreshold
-//         ) {
-//           // Mark the resistance circle on the bar where the pivot is confirmed
-//           if (index + leftBar < result.length) {
-//             result[index + leftBar].resistance = { value: kLineData.high };
-//           }
-//         }
-
-//         // Check if the current bar is a pivot low and volume is above threshold
-//         if (
-//           kLineData.low === lowestPoint &&
-//           kLineData.volume > volumeThreshold
-//         ) {
-//           // Mark the support circle on the bar where the pivot is confirmed
-//           if (index + leftBar < result.length) {
-//             result[index + leftBar].support = { value: kLineData.low };
-//           }
-//         }
-//       }
-//     });
-
-//     return result;
-//   },
-// };
 var supres = {
   name: "supres",
   series: "price",
@@ -986,14 +811,14 @@ export default {
 
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision, 10);
 
-          // chart.createIndicator(
-          //   {
-          //     name: "pp",
-          //     calcParams: [20],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
+          chart.createIndicator(
+            {
+              name: "pp",
+              calcParams: [12],
+            },
+            true,
+            { id: "candle_pane" }
+          );
           // chart.createIndicator(
           //   {
           //     name: "supres",
@@ -1020,14 +845,14 @@ export default {
           //   true,
           //   { id: "candle_pane" }
           // );
-          chart.createIndicator(
-            {
-              name: "myBot",
-              calcParams: [89, 1.326],
-            },
-            true,
-            { id: "candle_pane" }
-          );
+          // chart.createIndicator(
+          //   {
+          //     name: "myBot",
+          //     calcParams: [89, 1.326],
+          //   },
+          //   true,
+          //   { id: "candle_pane" }
+          // );
           // chart.createIndicator(
           //   {
           //     name: "myBot1",

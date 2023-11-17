@@ -4,13 +4,13 @@ import { normalizeURL, decode } from 'ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
-const _09f7ddbe = () => interopDefault(import('../pages/a.vue' /* webpackChunkName: "pages/a" */))
-const _20da4e1e = () => interopDefault(import('../pages/chart.vue' /* webpackChunkName: "pages/chart" */))
-const _86bf72e0 = () => interopDefault(import('../pages/index2.vue' /* webpackChunkName: "pages/index2" */))
-const _0e9549e0 = () => interopDefault(import('../pages/indicator.js' /* webpackChunkName: "pages/indicator" */))
-const _05c539cf = () => interopDefault(import('../pages/klinechart.vue' /* webpackChunkName: "pages/klinechart" */))
-const _7d7ce2d6 = () => interopDefault(import('../pages/klinechart copy.vue' /* webpackChunkName: "pages/klinechart copy" */))
-const _db0ff5dc = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
+const _10bad6b2 = () => interopDefault(import('..\\pages\\a.vue' /* webpackChunkName: "pages/a" */))
+const _4840c2b8 = () => interopDefault(import('..\\pages\\chart.vue' /* webpackChunkName: "pages/chart" */))
+const _624506ca = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages/index2" */))
+const _43ea38cc = () => interopDefault(import('..\\pages\\indicator.js' /* webpackChunkName: "pages/indicator" */))
+const _638965ee = () => interopDefault(import('..\\pages\\klinechart.vue' /* webpackChunkName: "pages/klinechart" */))
+const _5dd3c3dc = () => interopDefault(import('..\\pages\\klinechart copy.vue' /* webpackChunkName: "pages/klinechart copy" */))
+const _4d7d5598 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
 
@@ -25,31 +25,31 @@ export const routerOptions = {
 
   routes: [{
     path: "/a",
-    component: _09f7ddbe,
+    component: _10bad6b2,
     name: "a"
   }, {
     path: "/chart",
-    component: _20da4e1e,
+    component: _4840c2b8,
     name: "chart"
   }, {
     path: "/index2",
-    component: _86bf72e0,
+    component: _624506ca,
     name: "index2"
   }, {
     path: "/indicator",
-    component: _0e9549e0,
+    component: _43ea38cc,
     name: "indicator"
   }, {
     path: "/klinechart",
-    component: _05c539cf,
+    component: _638965ee,
     name: "klinechart"
   }, {
     path: "/klinechart%20copy",
-    component: _7d7ce2d6,
+    component: _5dd3c3dc,
     name: "klinechart copy"
   }, {
     path: "/",
-    component: _db0ff5dc,
+    component: _4d7d5598,
     name: "index"
   }],
 

@@ -2,43 +2,43 @@
   {
     "name": "a",
     "path": "/a",
-    "component": "/workspaces/scannerV2/pages/a.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\a.vue",
     "chunkName": "pages/a"
   },
   {
     "name": "chart",
     "path": "/chart",
-    "component": "/workspaces/scannerV2/pages/chart.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\chart.vue",
     "chunkName": "pages/chart"
   },
   {
     "name": "index2",
     "path": "/index2",
-    "component": "/workspaces/scannerV2/pages/index2.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index2.vue",
     "chunkName": "pages/index2"
   },
   {
     "name": "indicator",
     "path": "/indicator",
-    "component": "/workspaces/scannerV2/pages/indicator.js",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator.js",
     "chunkName": "pages/indicator"
   },
   {
     "name": "klinechart",
     "path": "/klinechart",
-    "component": "/workspaces/scannerV2/pages/klinechart.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart.vue",
     "chunkName": "pages/klinechart"
   },
   {
     "name": "klinechart copy",
     "path": "/klinechart%20copy",
-    "component": "/workspaces/scannerV2/pages/klinechart copy.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart copy.vue",
     "chunkName": "pages/klinechart copy"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/workspaces/scannerV2/pages/index.vue",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index.vue",
     "chunkName": "pages/index"
   }
 ]

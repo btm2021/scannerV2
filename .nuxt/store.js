@@ -2,7 +2,7 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as $6c3372f4 from '../store/db.js'
+import * as $6c3372f4 from '..\\store\\db.js'
 
 Vue.use(Vuex)
 
