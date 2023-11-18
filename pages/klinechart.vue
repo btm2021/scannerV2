@@ -9,44 +9,55 @@
 <script>
 import * as klinecharts from "klinecharts";
 function pivotLow(data, leftBars, rightBars) {
-    let pivotLows = [];
+  let pivotLows = [];
 
-    for (let i = leftBars; i < data.length - rightBars; i++) {
-        let isPivotLow = true;
+  for (let i = leftBars; i < data.length - rightBars; i++) {
+    let isPivotLow = true;
 
-        for (let j = i - leftBars; j <= i + rightBars; j++) {
-            if (j !== i && data[j].low <= data[i].low) {
-                isPivotLow = false;
-                break;
-            }
-        }
-
-        if (isPivotLow) {
-            pivotLows.push({ index: i, low: data[i].low });
-        }
+    for (let j = i - leftBars; j <= i + rightBars; j++) {
+      if (j !== i && data[j].low <= data[i].low) {
+        isPivotLow = false;
+        break;
+      }
     }
 
-    return pivotLows;
+    if (isPivotLow) {
+      pivotLows.push({
+        index: i,
+        low: data[i].low,
+        val: data[i].low,
+        timestamp: data[i].timestamp,
+      });
+    }
+  }
+
+  return pivotLows;
 }
+var chart;
 function pivotHigh(data, leftBars, rightBars) {
-    let pivotHighs = [];
+  let pivotHighs = [];
 
-    for (let i = leftBars; i < data.length - rightBars; i++) {
-        let isPivotHigh = true;
+  for (let i = leftBars; i < data.length - rightBars; i++) {
+    let isPivotHigh = true;
 
-        for (let j = i - leftBars; j <= i + rightBars; j++) {
-            if (j !== i && data[j].high >= data[i].high) {
-                isPivotHigh = false;
-                break;
-            }
-        }
-
-        if (isPivotHigh) {
-            pivotHighs.push({ index: i, high: data[i].high });
-        }
+    for (let j = i - leftBars; j <= i + rightBars; j++) {
+      if (j !== i && data[j].high >= data[i].high) {
+        isPivotHigh = false;
+        break;
+      }
     }
 
-    return pivotHighs;
+    if (isPivotHigh) {
+      pivotHighs.push({
+        index: i,
+        high: data[i].high,
+        val: data[i].high,
+        timestamp: data[i].timestamp,
+      });
+    }
+  }
+
+  return pivotHighs;
 }
 
 var findHL = {
@@ -55,26 +66,216 @@ var findHL = {
 
   calcParams: [20], // Length parameter from Pine Script
   figures: [
-    { key: "hh", title: "HH: ", type: "text" },
-    { key: "hl", title: "HL: ", type: "text" },
-    { key: "ll", title: "LL: ", type: "text" },
-    { key: "lh", title: "LH: ", type: "text" },
+    { key: "HH", title: "HH: ", type: "circle" },
+    { key: "HL", title: "HL: ", type: "circle" },
+    { key: "LL", title: "LL: ", type: "circle" },
+    { key: "LH", title: "LH: ", type: "circle" },
   ],
   calc: (data, { calcParams }) => {
-    if(data.length>0){
+    if (data.length > 0) {
       const length = calcParams[0];
-   //let ph= getPivotHigh(data, length,length);
-   let pl= pivotLow(data, length,length);
-   let ph= pivotHigh(data, length,length);
-   debugger
-    console.log(ph,pl)
-   return {}
-    }
-   return {}
+      //let ph= getPivotHigh(data, length,length);
+      let pl = pivotLow(data, length, length);
+      let ph = pivotHigh(data, length, length);
+      let patterns = findPivotPatterns(ph, pl);
 
+      //console.log(ph, pl, patterns);
+      function determineBoS(ohlcvData, pivotPoints) {
+        const bosSignals = {
+          bullish: [],
+          bearish: [],
+        };
+
+        // Duyệt qua dữ liệu OHLCV và xác định BoS
+        ohlcvData.forEach((data, index) => {
+          // Xác định BoS lên
+          if (
+            pivotPoints.HH.some((p) => p.index === index) &&
+            pivotPoints.HL.some((p) => p.index > index)
+          ) {
+            bosSignals.bullish.push({ index: index, value: data.low });
+          }
+
+          // Xác định BoS xuống
+          if (
+            pivotPoints.LL.some((p) => p.index === index) &&
+            pivotPoints.LH.some((p) => p.index > index)
+          ) {
+            bosSignals.bearish.push({ index: index, value: data.high });
+          }
+        });
+
+        return bosSignals;
+      }
+
+      let bos = determineBoS(data, patterns);
+      //  console.log(bos)
+      return { ...patterns, bos };
+    }
+
+    return {};
   },
-  
+  draw: ({
+    kLineDataList,
+    ctx,
+    barSpace,
+    visibleRange,
+    indicator,
+    xAxis,
+    yAxis,
+  }) => {
+    const { from, to } = visibleRange;
+
+    ctx.font = "normal 12px ";
+    ctx.textAlign = "center";
+    let result = indicator.result.HH;
+
+    indicator.result.HH.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "HH";
+      }
+    });
+
+    indicator.result.HL.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "HL";
+      }
+    });
+
+    indicator.result.LL.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "LL";
+      }
+    });
+
+    indicator.result.LH.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "LH";
+      }
+    });
+
+    for (let i = from; i < to; i++) {
+      const data = kLineDataList[i];
+
+      if (data.patternType) {
+        let x = xAxis.convertToPixel(i);
+        let y;
+        if (data.patternType === "HH" || data.patternType === "LH") {
+          y = yAxis.convertToPixel(data.high) - 20;
+
+          ctx.fillText("⏷", x, y + 10);
+          ctx.fillStyle = "blue";
+        }
+
+        if (data.patternType === "LL" || data.patternType === "HL") {
+          y = yAxis.convertToPixel(data.low) + 10;
+
+          ctx.fillText("⏶", x, y - 10);
+          ctx.fillStyle = "red";
+        }
+
+        ctx.fillText(data.patternType, x, y);
+      }
+    }
+
+    return true;
+  },
 };
+
+var findHL1 = {
+  name: "pp1",
+  shortName: "pp1",
+
+  calcParams: [20], // Length parameter from Pine Script
+  figures: [{ key: "bull", title: "HH: ", type: "line" }],
+  calc: (data, { calcParams }) => {
+    if (data.length > 0) {
+      const length = calcParams[0];
+      //let ph= getPivotHigh(data, length,length);
+      let pl = pivotLow(data, length, length);
+      let ph = pivotHigh(data, length, length);
+      let patterns = findPivotPatterns(ph, pl);
+
+      //console.log(ph, pl, patterns);
+      function determineBoS(ohlcvData, pivotPoints) {
+        const bosSignals = {
+          bullish: [],
+          bearish: [],
+        };
+        let bull = [];
+
+        // Duyệt qua dữ liệu OHLCV và xác định BoS
+        ohlcvData.forEach((data, index) => {
+          // Xác định BoS lên
+          if (
+            pivotPoints.HH.some((p) => p.index === index) &&
+            pivotPoints.HL.some((p) => p.index > index)
+          ) {
+            bull.push({
+              bull: data.low,
+            });
+            bosSignals.bullish.push({ index: index, value: data.low });
+          } else {
+            bull.push({
+               bull: null
+            });
+          }
+
+          // Xác định BoS xuống
+          if (
+            pivotPoints.LL.some((p) => p.index === index) &&
+            pivotPoints.LH.some((p) => p.index > index)
+          ) {
+            bosSignals.bearish.push({ index: index, value: data.high });
+          }
+        });
+
+        return bull;
+      }
+      let bos = determineBoS(data, patterns);
+      console.log(bos);
+
+      
+      return  bos ;
+    }
+  },
+};
+
+function findPivotPatterns(pivotHighs, pivotLows) {
+  let HH = [],
+    LH = [],
+    HL = [],
+    LL = [];
+
+  // Xác định Higher Highs và Lower Highs
+  let lastHigh = null;
+  pivotHighs.forEach((point) => {
+    if (lastHigh === null || point.high > lastHigh.high) {
+      HH.push(point);
+    } else {
+      LH.push(point);
+    }
+    lastHigh = point;
+  });
+
+  // Xác định Higher Lows và Lower Lows
+  let lastLow = null;
+  pivotLows.forEach((point) => {
+    if (lastLow === null || point.low > lastLow.low) {
+      HL.push(point);
+    } else {
+      LL.push(point);
+    }
+    lastLow = point;
+  });
+
+  return { HH, LH, HL, LL };
+}
+
 var smcIndicator1 = {
   name: "SMC1",
   shortName: "SMC1",
@@ -618,7 +819,11 @@ var zigzagIndicator = {
       return zigzag;
     }
     const zigzagValues = zigzag(kLineDataList, deviation);
-
+    let a = zigzagValues.map((z) => {
+      return {
+        zigzag: z.value,
+      };
+    });
     return zigzagValues.map((z) => {
       return {
         zigzag: z.value,
@@ -749,7 +954,7 @@ export default {
   methods: {
     async fetchData() {
       return new Promise((resolve, reject) => {
-        let url = `https://fapi.binance.com/fapi/v1/klines?symbol=${this.symbol}&interval=${this.timeframe}&limit=500`;
+        let url = `https://fapi.binance.com/fapi/v1/klines?symbol=${this.symbol}&interval=${this.timeframe}&limit=1000`;
         this.$axios.get(url).then((data) => {
           resolve(this.formatData(data.data));
         });
@@ -808,7 +1013,7 @@ export default {
 
           klinecharts.registerIndicator(zigzagIndicator);
           klinecharts.registerIndicator(findHL);
-
+          klinecharts.registerIndicator(findHL1);
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision, 10);
 
           chart.createIndicator(
@@ -819,14 +1024,31 @@ export default {
             true,
             { id: "candle_pane" }
           );
-          // chart.createIndicator(
-          //   {
-          //     name: "supres",
-          //     calcParams: [15, 15, 20],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
+
+          chart.createIndicator(
+            {
+              name: "pp1",
+              calcParams: [12],
+            },
+            true,
+            { id: "candle_pane" }
+          );
+          chart.createIndicator(
+            {
+              name: "ZigZag",
+              calcParams: [2],
+            },
+            true,
+            { id: "candle_pane" }
+          );
+          chart.createIndicator(
+            {
+              name: "supres",
+              calcParams: [15, 15, 20],
+            },
+            true,
+            { id: "candle_pane" }
+          );
 
           //thêm volume
           // chart.createIndicator({
@@ -845,30 +1067,30 @@ export default {
           //   true,
           //   { id: "candle_pane" }
           // );
-          // chart.createIndicator(
-          //   {
-          //     name: "myBot",
-          //     calcParams: [89, 1.326],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
-          // chart.createIndicator(
-          //   {
-          //     name: "myBot1",
-          //     calcParams: [34, 1.326],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
-          // chart.createIndicator(
-          //   {
-          //     name: "DONCHIAN",
-          //     calcParams: [100],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
+          chart.createIndicator(
+            {
+              name: "myBot",
+              calcParams: [89, 1.326],
+            },
+            true,
+            { id: "candle_pane" }
+          );
+          chart.createIndicator(
+            {
+              name: "myBot1",
+              calcParams: [34, 1.326],
+            },
+            true,
+            { id: "candle_pane" }
+          );
+          chart.createIndicator(
+            {
+              name: "DONCHIAN",
+              calcParams: [100],
+            },
+            true,
+            { id: "candle_pane" }
+          );
           // chart.createIndicator(
           //   {
           //     name: "ZigZag",
@@ -901,6 +1123,7 @@ export default {
           //   true,
           //   { id: "candle_pane" }
           // );
+          chart = chart;
           window.addEventListener("resize", () => {
             this.chart.resize();
           });
@@ -945,7 +1168,7 @@ export default {
     },
   },
   unmounted() {
-    console.log("Unmounted")
+    console.log("Unmounted");
     binanceSocket.close();
     dispose("chart");
   },
