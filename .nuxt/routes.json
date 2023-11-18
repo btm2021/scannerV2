@@ -3,19 +3,22 @@
     "name": "a",
     "path": "/a",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\a.vue",
-    "chunkName": "pages/a"
+    "chunkName": "pages/a",
+    "_name": "_10bad6b2"
   },
   {
     "name": "chart",
     "path": "/chart",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\chart.vue",
-    "chunkName": "pages/chart"
+    "chunkName": "pages/chart",
+    "_name": "_4840c2b8"
   },
   {
     "name": "index2",
     "path": "/index2",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index2.vue",
-    "chunkName": "pages/index2"
+    "chunkName": "pages/index2",
+    "_name": "_624506ca"
   },
   {
     "name": "indicator",
@@ -27,32 +30,38 @@
         "name": "indicator-all",
         "path": "all",
         "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator\\\\all.js",
-        "chunkName": "pages/indicator/all"
+        "chunkName": "pages/indicator/all",
+        "_name": "_6860a073"
       }
-    ]
+    ],
+    "_name": "_43ea38cc"
   },
   {
     "name": "klinechart",
     "path": "/klinechart",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart.vue",
-    "chunkName": "pages/klinechart"
+    "chunkName": "pages/klinechart",
+    "_name": "_638965ee"
   },
   {
     "name": "klinechart copy",
     "path": "/klinechart%20copy",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart copy.vue",
-    "chunkName": "pages/klinechart copy"
+    "chunkName": "pages/klinechart copy",
+    "_name": "_5dd3c3dc"
   },
   {
     "name": "overlay-all",
     "path": "/overlay/all",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\overlay\\\\all.js",
-    "chunkName": "pages/overlay/all"
+    "chunkName": "pages/overlay/all",
+    "_name": "_2bfa6d98"
   },
   {
     "name": "index",
     "path": "/",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index.vue",
-    "chunkName": "pages/index"
+    "chunkName": "pages/index",
+    "_name": "_4d7d5598"
   }
 ]

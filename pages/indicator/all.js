@@ -425,4 +425,272 @@ var supres = {
     return result;
   },
 };
-export { myBot34, myBot89, donchianIndicator, zigzag,supres }
+//expriment
+
+
+function pivotLow(data, leftBars, rightBars) {
+  let pivotLows = [];
+
+  for (let i = leftBars; i < data.length - rightBars; i++) {
+    let isPivotLow = true;
+
+    for (let j = i - leftBars; j <= i + rightBars; j++) {
+      if (j !== i && data[j].low <= data[i].low) {
+        isPivotLow = false;
+        break;
+      }
+    }
+
+    if (isPivotLow) {
+      pivotLows.push({
+        index: i,
+        low: data[i].low,
+        val: data[i].low,
+        timestamp: data[i].timestamp,
+      });
+    }
+  }
+
+  return pivotLows;
+}
+function pivotHigh(data, leftBars, rightBars) {
+  let pivotHighs = [];
+
+  for (let i = leftBars; i < data.length - rightBars; i++) {
+    let isPivotHigh = true;
+
+    for (let j = i - leftBars; j <= i + rightBars; j++) {
+      if (j !== i && data[j].high >= data[i].high) {
+        isPivotHigh = false;
+        break;
+      }
+    }
+
+    if (isPivotHigh) {
+      pivotHighs.push({
+        index: i,
+        high: data[i].high,
+        val: data[i].high,
+        timestamp: data[i].timestamp,
+      });
+    }
+  }
+
+  return pivotHighs;
+}
+
+var findHL = {
+  name: "pp",
+  shortName: "pp",
+
+  calcParams: [20], // Length parameter from Pine Script
+  figures: [
+    { key: "HH", title: "HH: ", type: "circle" },
+    { key: "HL", title: "HL: ", type: "circle" },
+    { key: "LL", title: "LL: ", type: "circle" },
+    { key: "LH", title: "LH: ", type: "circle" },
+  ],
+  calc: (data, { calcParams }) => {
+    if (data.length > 0) {
+      const length = calcParams[0];
+      //let ph= getPivotHigh(data, length,length);
+      let pl = pivotLow(data, length, length);
+      let ph = pivotHigh(data, length, length);
+      let patterns = findPivotPatterns(ph, pl);
+
+      //console.log(ph, pl, patterns);
+      function determineBoS(ohlcvData, pivotPoints) {
+        const bosSignals = {
+          bullish: [],
+          bearish: [],
+        };
+
+        // Duyệt qua dữ liệu OHLCV và xác định BoS
+        ohlcvData.forEach((data, index) => {
+          // Xác định BoS lên
+          if (
+            pivotPoints.HH.some((p) => p.index === index) &&
+            pivotPoints.HL.some((p) => p.index > index)
+          ) {
+            bosSignals.bullish.push({ index: index, value: data.low });
+          }
+
+          // Xác định BoS xuống
+          if (
+            pivotPoints.LL.some((p) => p.index === index) &&
+            pivotPoints.LH.some((p) => p.index > index)
+          ) {
+            bosSignals.bearish.push({ index: index, value: data.high });
+          }
+        });
+
+        return bosSignals;
+      }
+
+      let bos = determineBoS(data, patterns);
+      //  console.log(bos)
+      return { ...patterns, bos };
+    }
+
+    return {};
+  },
+  draw: ({
+    kLineDataList,
+    ctx,
+    barSpace,
+    visibleRange,
+    indicator,
+    xAxis,
+    yAxis,
+  }) => {
+    const { from, to } = visibleRange;
+
+    ctx.font = "normal 12px ";
+    ctx.textAlign = "center";
+    let result = indicator.result.HH;
+
+    indicator.result.HH.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "HH";
+      }
+    });
+
+    indicator.result.HL.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "HL";
+      }
+    });
+
+    indicator.result.LL.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "LL";
+      }
+    });
+
+    indicator.result.LH.forEach((pattern) => {
+      // Assuming ohlcv[pattern.index] is valid and pattern.type is one of 'HH', 'HL', 'LL', 'LH'
+      if (kLineDataList[pattern.index]) {
+        kLineDataList[pattern.index].patternType = "LH";
+      }
+    });
+
+    for (let i = from; i < to; i++) {
+      const data = kLineDataList[i];
+
+      if (data.patternType) {
+        let x = xAxis.convertToPixel(i);
+        let y;
+        if (data.patternType === "HH" || data.patternType === "LH") {
+          y = yAxis.convertToPixel(data.high) - 20;
+
+          ctx.fillText("⏷", x, y + 10);
+          ctx.fillStyle = "red";
+        }
+
+        if (data.patternType === "LL" || data.patternType === "HL") {
+          y = yAxis.convertToPixel(data.low) + 10;
+
+          ctx.fillText("⏶", x, y - 10);
+          ctx.fillStyle = "red";
+        }
+
+        ctx.fillText(data.patternType, x, y);
+      }
+    }
+
+    return true;
+  },
+};
+
+var findHL1 = {
+  name: "pp1",
+  shortName: "pp1",
+
+  calcParams: [20], // Length parameter from Pine Script
+  figures: [{ key: "bull", title: "HH: ", type: "line" }],
+  calc: (data, { calcParams }) => {
+    if (data.length > 0) {
+      const length = calcParams[0];
+      //let ph= getPivotHigh(data, length,length);
+      let pl = pivotLow(data, length, length);
+      let ph = pivotHigh(data, length, length);
+      let patterns = findPivotPatterns(ph, pl);
+
+      //console.log(ph, pl, patterns);
+      function determineBoS(ohlcvData, pivotPoints) {
+        const bosSignals = {
+          bullish: [],
+          bearish: [],
+        };
+        let bull = [];
+
+        // Duyệt qua dữ liệu OHLCV và xác định BoS
+        ohlcvData.forEach((data, index) => {
+          // Xác định BoS lên
+          if (
+            pivotPoints.HH.some((p) => p.index === index) &&
+            pivotPoints.HL.some((p) => p.index > index)
+          ) {
+            bull.push({
+              bull: data.low,
+            });
+            bosSignals.bullish.push({ index: index, value: data.low });
+          } else {
+            bull.push({
+              bull: null,
+            });
+          }
+
+          // Xác định BoS xuống
+          if (
+            pivotPoints.LL.some((p) => p.index === index) &&
+            pivotPoints.LH.some((p) => p.index > index)
+          ) {
+            bosSignals.bearish.push({ index: index, value: data.high });
+          }
+        });
+
+        return bull;
+      }
+      let bos = determineBoS(data, patterns);
+
+      return bos;
+    }
+  },
+};
+
+function findPivotPatterns(pivotHighs, pivotLows) {
+  let HH = [],
+    LH = [],
+    HL = [],
+    LL = [];
+
+  // Xác định Higher Highs và Lower Highs
+  let lastHigh = null;
+  pivotHighs.forEach((point) => {
+    if (lastHigh === null || point.high > lastHigh.high) {
+      HH.push(point);
+    } else {
+      LH.push(point);
+    }
+    lastHigh = point;
+  });
+
+  // Xác định Higher Lows và Lower Lows
+  let lastLow = null;
+  pivotLows.forEach((point) => {
+    if (lastLow === null || point.low > lastLow.low) {
+      HL.push(point);
+    } else {
+      LL.push(point);
+    }
+    lastLow = point;
+  });
+
+  return { HH, LH, HL, LL };
+}
+
+export { myBot34, myBot89, donchianIndicator, zigzag,supres,findHL,findHL1 };
