@@ -47,7 +47,7 @@
             :class="data.item.isAdd?'text-primary':'text-secondary'"
             
             >
-            {{ data.item.name }}</span>
+            {{ data.item.value }}</span>
           </b>
       </template>
     </b-table>
@@ -59,11 +59,9 @@
 import * as klinecharts from "klinecharts";
 import {rect,rule} from './overlay/all.js'
 import {myBot34,myBot89,donchianIndicator,zigzag} from './indicator/all.js'
-//overlay
-
 const listOverLay=[rect,rule]
 const listIndicator=[myBot34,myBot89,donchianIndicator,zigzag]
-//indicator
+
 function pivotLow(data, leftBars, rightBars) {
   let pivotLows = [];
 
@@ -89,7 +87,6 @@ function pivotLow(data, leftBars, rightBars) {
 
   return pivotLows;
 }
-var chart;
 function pivotHigh(data, leftBars, rightBars) {
   let pivotHighs = [];
 
@@ -451,73 +448,7 @@ function findPivotPatterns(pivotHighs, pivotLows) {
 //   },
 // };
 
-// var supres = {
-//   name: "supres",
-//   series: "price",
-//   calcParams: [15, 15, 20],
-//   figures: [
-//     {
-//       key: "resistance",
-//       title: "Resistant",
-//       type: "circle",
-//       styles: () => {
-//         return {
-//           color: "red",
-//         };
-//       },
-//     },
-//     {
-//       key: "support",
-//       title: "Support",
-//       type: "circle",
-//       styles: () => {
-//         return {
-//           color: "blue",
-//         };
-//       },
-//     },
-//   ],
-//   calc: (kLineDataList, { calcParams }) => {
-//     const result = [];
-//     let lastResistance = null;
-//     let lastSupport = null;
 
-//     let leftBar = calcParams[0];
-//     let rightBar = calcParams[1];
-//     let volumeThreshold = calcParams[2];
-//     kLineDataList.forEach((kLineData, index) => {
-//       if (index >= leftBar && index < kLineDataList.length - rightBar) {
-//         const leftIndex = index - leftBar;
-//         const rightIndex = index + rightBar + 1;
-//         const highSet = kLineDataList.slice(leftIndex, rightIndex);
-//         const lowSet = kLineDataList.slice(leftIndex, rightIndex);
-
-//         const highestPoint = highest(highSet, "high");
-//         const lowestPoint = lowest(lowSet, "low");
-
-//         if (
-//           kLineData.high === highestPoint &&
-//           kLineData.volume > volumeThreshold
-//         ) {
-//           lastResistance = kLineData.high;
-//         }
-
-//         if (
-//           kLineData.low === lowestPoint &&
-//           kLineData.volume > volumeThreshold
-//         ) {
-//           lastSupport = kLineData.low;
-//         }
-
-//         result.push({
-//           resistance: lastResistance,
-//           support: lastSupport,
-//         });
-//       }
-//     });
-//     return result;
-//   },
-// };
 var binanceSocket;
 export default {
   data() {
@@ -526,27 +457,7 @@ export default {
       chart: null,
       symbol: "BTCUSDT",
       timeframe: "15m",
-      listIndicator:[
-        {name:'zigzag',nameRegistor:'zigzag',value:'ZigZag',type:'main',calcParams:[2],isAdd:false},
-        {name:'bot89',nameRegistor:'myBot89',value:'bot89',type:'main', calcParams: [89, 1.326],isAdd:false},
-        {name:'bot34',nameRegistor:'myBot34',value:'bot34',type:'main', calcParams: [34, 1.326],isAdd:false},
-        {name:'donchian',nameRegistor:'DONCHIAN',value:'donchian',type:'main',calcParams: [100],isAdd:false},
-        {name:'ema21',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [21],isAdd:false},
-        {name:'ema34',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [34],isAdd:false},
-        {name:'ema89',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [89],isAdd:false},
-        {name:'ema100',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [100],isAdd:false},
-        {name:'ema200',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [200],isAdd:false},
-        {name:'ema610',nameRegistor:'EMA',value:'ema',type:'main',calcParams: [610],isAdd:false},
-        {name:'BOLL',nameRegistor:'BOLL',value:'BOLL',type:'main',calcParams:[20,2],isAdd:false},
-        {name:'BBI',nameRegistor:'BBI',value:'ema',type:'main',calcParams: [3, 6, 12, 24],isAdd:false},
-        {name:'VOL',nameRegistor:'VOL',value:'VOL',type:'sub',calcParams: [1],isAdd:false},
-        {name:'RSI',nameRegistor:'RSI',value:'RSI',type:'sub',calcParams: [14],isAdd:false},
-        {name:'MACD',nameRegistor:'MACD',value:'MACD',type:'sub',calcParams: [12, 26, 9],isAdd:false},
-        {name:'KDJ',nameRegistor:'KDJ',value:'KDJ',type:'sub',calcParams: [9, 3, 3],isAdd:false},
-        {name:'AO',nameRegistor:'AO',value:'AO',type:'sub',calcParams:[5, 34],isAdd:false},
-        {name:'CCI',nameRegistor:'CCI',value:'CCI',type:'sub',calcParams:[13],isAdd:false},
-      
-      ],
+      listIndicator:[],
       fieldsIndicator:[
         {key:'name'},
         {key:'type'},
@@ -743,8 +654,40 @@ export default {
 
     this.initChart();
   },
-  computed: {},
-  watch: {},
+  computed: {
+    list_indicator () {
+      return this.$store.state.db.list_indicator
+    }
+  },
+  watch:{
+    list_indicator(newV,oldV){
+      this.listIndicator=JSON.parse(JSON.stringify(newV))
+      //
+     if(this.chart){
+      this.listIndicator.forEach(item=>{
+       
+        if(item.isDefault){
+          this.addIndicator(item)
+        }
+        
+        })
+     }else{
+      console.log('attemp load indicator after 500ms')
+      setTimeout(()=>{
+        this.listIndicator.forEach(item=>{
+    
+        if(item.isDefault){
+          this.addIndicator(item)
+        }
+        
+        })
+      },500)
+     }
+   
+    }
+      
+    
+  }
 };
 </script>
 <style scoped>

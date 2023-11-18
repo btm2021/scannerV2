@@ -8,8 +8,10 @@ const _10bad6b2 = () => interopDefault(import('..\\pages\\a.vue' /* webpackChunk
 const _4840c2b8 = () => interopDefault(import('..\\pages\\chart.vue' /* webpackChunkName: "pages/chart" */))
 const _624506ca = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages/index2" */))
 const _43ea38cc = () => interopDefault(import('..\\pages\\indicator.js' /* webpackChunkName: "pages/indicator" */))
+const _6860a073 = () => interopDefault(import('..\\pages\\indicator\\all.js' /* webpackChunkName: "pages/indicator/all" */))
 const _638965ee = () => interopDefault(import('..\\pages\\klinechart.vue' /* webpackChunkName: "pages/klinechart" */))
 const _5dd3c3dc = () => interopDefault(import('..\\pages\\klinechart copy.vue' /* webpackChunkName: "pages/klinechart copy" */))
+const _2bfa6d98 = () => interopDefault(import('..\\pages\\overlay\\all.js' /* webpackChunkName: "pages/overlay/all" */))
 const _4d7d5598 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
@@ -38,7 +40,12 @@ export const routerOptions = {
   }, {
     path: "/indicator",
     component: _43ea38cc,
-    name: "indicator"
+    name: "indicator",
+    children: [{
+      path: "all",
+      component: _6860a073,
+      name: "indicator-all"
+    }]
   }, {
     path: "/klinechart",
     component: _638965ee,
@@ -47,6 +54,10 @@ export const routerOptions = {
     path: "/klinechart%20copy",
     component: _5dd3c3dc,
     name: "klinechart copy"
+  }, {
+    path: "/overlay/all",
+    component: _2bfa6d98,
+    name: "overlay-all"
   }, {
     path: "/",
     component: _4d7d5598,

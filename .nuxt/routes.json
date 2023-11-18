@@ -21,7 +21,15 @@
     "name": "indicator",
     "path": "/indicator",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator.js",
-    "chunkName": "pages/indicator"
+    "chunkName": "pages/indicator",
+    "children": [
+      {
+        "name": "indicator-all",
+        "path": "all",
+        "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator\\\\all.js",
+        "chunkName": "pages/indicator/all"
+      }
+    ]
   },
   {
     "name": "klinechart",
@@ -34,6 +42,12 @@
     "path": "/klinechart%20copy",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart copy.vue",
     "chunkName": "pages/klinechart copy"
+  },
+  {
+    "name": "overlay-all",
+    "path": "/overlay/all",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\overlay\\\\all.js",
+    "chunkName": "pages/overlay/all"
   },
   {
     "name": "index",

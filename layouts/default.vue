@@ -68,6 +68,7 @@ export default {
     this.getExchangeInfo().then((data) => {
       this.getAll();
       this.getStreamPrice();
+      this.getIndicator();
     });
   },
   methods: {
@@ -110,6 +111,27 @@ export default {
         })
         .then((data) => {
           this.$store.commit("db/set_list_symbol_db", data.data);
+        });
+    },
+    getIndicator() {
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/list_indicator/query";
+      let body = {
+        query: [
+          {
+            
+          },
+        ],
+      };
+      this.$axios
+        .post(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": dbKey,
+          },
+        })
+        .then((data) => {
+       
+          this.$store.commit("db/set_list_indicator_db", data.data);
         });
     },
     getStreamPrice() {
