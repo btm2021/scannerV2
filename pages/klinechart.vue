@@ -1,4 +1,5 @@
 <template>
+  
   <b-container fluid>
     <b-overlay :show="!dataReady">
       <template #overlay>
@@ -114,7 +115,7 @@
       <b-col cols="2">
 
         <div class="flex justify-center items-center min-h-[6rem]">
-    <div v-if="!pending" class="grid grid-cols-2 gap-x-2 font-mono text-right w-full">
+       <div v-if="!pending" class="grid grid-cols-2 gap-x-2 font-mono text-right w-full">
       <slot name="beforeOrderbook" />
       <div class="grid grid-cols-2">
         <span>Size</span>
@@ -468,6 +469,8 @@ export default {
             console.log(`Unscribed to ${this.symbol} - ${this.timeframe}`);
           };
 
+          //orderbook
+
           binanceSocket.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
@@ -488,7 +491,16 @@ export default {
             this.chart.updateData(newData);
           };
         });
+        //
+        // var binance = new WebSocket(`wss://stream.binance.com:9443/ws/${this.symbol.toLowerCase()}@depth`);
+        // binance.onmessage = function (event) {
+
+        //     var stream = JSON.parse(event.data)
+        //    console.log(stream)
+
+        // }
       }
+      
     },
   },
   unmounted() {
@@ -544,7 +556,10 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
+body,html{
+  background-color: rgb(22,26,30) !important;
+}
 .myBtn {
   width: 100%;
   color: red;
