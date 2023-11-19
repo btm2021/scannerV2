@@ -53,6 +53,41 @@
             overflow: hidden;
           "
         ></iframe>
+        <h4 id="h4">H4 {{ choiceSymbol }}</h4>
+        <iframe
+          :src="`\klinechart?symbol=${choiceSymbol}&timeframe=4h&exchange=binance`"
+          style="
+            width: 99%;
+            border: 0px;
+            height: 650px;
+            border: 0px;
+            overflow: hidden;
+          "
+        ></iframe>
+
+        <h4 id="d1">1D {{ choiceSymbol }}</h4>
+        <iframe
+          :src="`\klinechart?symbol=${choiceSymbol}&timeframe=1d&exchange=binance`"
+          style="
+            width: 99%;
+            border: 0px;
+            height: 650px;
+            border: 0px;
+            overflow: hidden;
+          "
+        ></iframe>
+
+        <h4 id="tdv">Main {{ choiceSymbol }}</h4>
+        <iframe
+          :src="`\chart?symbol=${choiceSymbol}&exchange=binance`"
+          style="
+            width: 99%;
+            border: 0px;
+            height: 650px;
+            border: 0px;
+            overflow: hidden;
+          "
+        ></iframe>
       </b-card-body>
       <b-sidebar backdrop shadow id="priceStream" title="Luồng Giá">
         <div class="px-3 py-2">

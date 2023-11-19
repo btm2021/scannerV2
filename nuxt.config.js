@@ -33,6 +33,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/myPlug.js'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -49,6 +50,10 @@ export default {
     'bootstrap-vue/nuxt',
     '@nuxtjs/moment'
   ],
+
+bootstrapVue: {
+  icons: true
+},
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options

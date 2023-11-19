@@ -1,6 +1,17 @@
 <template>
   <b-container fluid>
-    <b-row class="no-gutters">
+    <b-overlay :show="!dataReady">
+      <template #overlay>
+        <div class="text-center">
+        
+          <div class="text-center">
+            <b-icon variant="warning" icon="arrow-clockwise" animation="spin" font-scale="2"></b-icon>
+            <p>Chờ xíu bạn...</p>
+         
+        </div>
+        </div>
+      </template>
+      <b-row class="no-gutters">
       <b-col sm="12" lg="9">
         <div id="chart" style="width: 100%; height: 600px; background-color:#171b26; 
           
@@ -57,6 +68,20 @@
                     </g>
                   </svg></span>
               </b-button>
+              <b-button @click="createOverLay('plan')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
+                    height="28">
+                    <g fill="currentColor" fill-rule="nonzero">
+                      <path d="M7.5 6h13v-1h-13z" id="Line"></path>
+                      <path d="M7.5 23h13v-1h-13z"></path>
+                      <path d="M5 7.5v13h1v-13z"></path>
+                      <path d="M22 7.5v13h1v-13z"></path>
+                      <path
+                        d="M5.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM22.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM22.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM5.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z">
+                      </path>
+                    </g>
+                  </svg></span>
+              </b-button>
               <b-button class="myBtn" v-b-modal.modal-indicator>
                 <span class="icon-jFqVJoPk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
                     height="28">
@@ -82,11 +107,43 @@
             </b-button-group>
           </b-col>
           <b-col cols="10">
-            <div>das</div>
+           
           </b-col>
         </b-row>
       </b-col>
-      <b-col cols="2"></b-col>
+      <b-col cols="2">
+
+        <div class="flex justify-center items-center min-h-[6rem]">
+    <div v-if="!pending" class="grid grid-cols-2 gap-x-2 font-mono text-right w-full">
+      <slot name="beforeOrderbook" />
+      <div class="grid grid-cols-2">
+        <span>Size</span>
+        <span>Bid</span>
+      </div>
+      <div class="grid grid-cols-2">
+        <span>Ask</span>
+        <span>Size</span>
+      </div>
+      <div
+        v-for="item in displayItems"
+        :key="item"
+        class="grid grid-cols-2 hover hover:bg-gray-100 cursor-pointer"
+        @click="onClick(item)"
+      >
+        <span :class="sideToSpanClass(item.side) + ' ' + itemToSpanClass(item)">{{
+          item.side === 'bid' ? item.sizeDisplay : item.price
+        }}</span>
+        <span :class="sideToSpanClass(item.side) + ' ' + itemToSpanClass(item)">{{
+          item.side == 'bid' ? item.price : item.sizeDisplay
+        }}</span>
+      </div>
+      <slot name="afterOrderbook" />
+    </div>
+    <div v-else>
+      <progress class="progress progress-primary w-56"></progress>
+    </div>
+  </div>
+      </b-col>
 
       <b-modal scrollable id="modal-indicator" title="Indicator">
         <b-table :fields="fieldsIndicator" striped hover :items="listIndicator" small>
@@ -101,14 +158,14 @@
             <span v-if="data.item.isEdit">
            
               <b-input-group  size="sm" :prepend="data.item.calcParams.toString()" class="">
-                <b-form-input  :ref='"ref_input_"+data.item.name' size="sm" :value="data.item.calcParams.toString()" ></b-form-input>
+                <b-form-input  autocomplete="off" :ref='"ref_input_"+data.item.name' size="sm" :value="data.item.calcParams.toString()" ></b-form-input>
                 <b-input-group-append  size="sm">
                   <b-button  size="sm" variant="success" @click="saveParam(data.item,'ref_input_'+data.item.name)">Save</b-button>
                 </b-input-group-append>
               </b-input-group>
             </span>
             <span v-else>
-              <b @click="editParam(data.item)">
+              <b @click="data.item.isEdit=true" class="choiceIndicator" >
                 {{ data.item.calcParams }}
               </b>
             </span>
@@ -116,14 +173,16 @@
         </b-table>
       </b-modal>
     </b-row>
+    </b-overlay>
+    
   </b-container>
 </template>
       
 <script>
 import * as klinecharts from "klinecharts";
-import { rect, rule } from './overlay/all.js'
+import { rect, rule,plan } from './overlay/all.js'
 import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1 } from './indicator/all.js'
-const listOverLay = [rect, rule]
+const listOverLay = [rect, rule,plan]
 const listIndicator = [myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
 
 // var smcIndicator1 = {
@@ -247,11 +306,14 @@ const listIndicator = [myBot34, myBot89, donchianIndicator, zigzag, findHL, find
 //   },
 // };
 
-
 var binanceSocket;
 export default {
   data() {
     return {
+      displayItems:[],
+      pending:false,
+      dataReady:false,
+      isEdit:false,
       dataOHLCV: [],
       chart: null,
       symbol: "BTCUSDT",
@@ -263,7 +325,6 @@ export default {
         { key: 'calcParams' },
       ],
       optionChart: {
-
         styles: {
           indicator: {
             tooltip: {
@@ -293,14 +354,17 @@ export default {
     };
   },
   methods: {
-    editParam(indicator) {
-      console.log(indicator)
-      indicator.isEdit = true
-    },
+    
     saveParam(indicator,ref) {
-      debugger
-      let val = this.$ref[ref]
-     console.log(val)
+      let type = indicator.type
+      let val = this.$refs[ref].localValue
+      let v =val.split(',').map(Number);
+      indicator.calcParams = v
+      this.chart.removeIndicator((type === "main" ? "candle_pane" : indicator.name), indicator.nameRegistor)
+      indicator.isEdit = false
+      indicator.isAdd=false
+      this.addIndicator(indicator)
+      this.$bvModal.hide('modal-indicator')
     },
     addIndicator(indicator) {
       let type = indicator.type
@@ -386,25 +450,6 @@ export default {
           })
 
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision, 10);
-
-          // chart.createIndicator(
-          //   {
-          //     name: "pp",
-          //     calcParams: [12],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
-
-          // chart.createIndicator(
-          //   {
-          //     name: "pp1",
-          //     calcParams: [12],
-          //   },
-          //   true,
-          //   { id: "candle_pane" }
-          // );
-
           chart = chart;
           window.addEventListener("resize", () => {
             this.chart.resize();
@@ -468,6 +513,7 @@ export default {
   },
   watch: {
     list_indicator(newV, oldV) {
+      this.dataReady=true
       this.listIndicator = JSON.parse(JSON.stringify(newV))
       //
       if (this.chart) {
@@ -475,6 +521,7 @@ export default {
 
           if (item.isDefault) {
             this.addIndicator(item)
+          
           }
 
         })
