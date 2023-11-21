@@ -9,6 +9,7 @@ const _4840c2b8 = () => interopDefault(import('..\\pages\\chart.vue' /* webpackC
 const _624506ca = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages/index2" */))
 const _43ea38cc = () => interopDefault(import('..\\pages\\indicator.js' /* webpackChunkName: "pages/indicator" */))
 const _6860a073 = () => interopDefault(import('..\\pages\\indicator\\all.js' /* webpackChunkName: "pages/indicator/all" */))
+const _8bdd85e6 = () => interopDefault(import('..\\pages\\indicator\\ta.js' /* webpackChunkName: "pages/indicator/ta" */))
 const _638965ee = () => interopDefault(import('..\\pages\\klinechart.vue' /* webpackChunkName: "pages/klinechart" */))
 const _5dd3c3dc = () => interopDefault(import('..\\pages\\klinechart copy.vue' /* webpackChunkName: "pages/klinechart copy" */))
 const _2bfa6d98 = () => interopDefault(import('..\\pages\\overlay\\all.js' /* webpackChunkName: "pages/overlay/all" */))
@@ -45,6 +46,10 @@ export const routerOptions = {
       path: "all",
       component: _6860a073,
       name: "indicator-all"
+    }, {
+      path: "ta",
+      component: _8bdd85e6,
+      name: "indicator-ta"
     }]
   }, {
     path: "/klinechart",

@@ -32,6 +32,13 @@
         "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator\\\\all.js",
         "chunkName": "pages/indicator/all",
         "_name": "_6860a073"
+      },
+      {
+        "name": "indicator-ta",
+        "path": "ta",
+        "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator\\\\ta.js",
+        "chunkName": "pages/indicator/ta",
+        "_name": "_8bdd85e6"
       }
     ],
     "_name": "_43ea38cc"

@@ -14,9 +14,7 @@
       </template>
       <b-row class="no-gutters">
       <b-col sm="12" lg="9">
-        <div id="chart" style="width: 100%; height: 600px; background-color:#171b26; 
-          
-            " />
+        <div id="chart" style="width: 100%; height: 600px; background-color:#171b26;"></div>
       </b-col>
       <b-col sm="12" lg="3">
         <b-row class="no-gutters">
@@ -28,6 +26,10 @@
                       d="M2 9.75a1.5 1.5 0 0 0-1.5 1.5v5.5a1.5 1.5 0 0 0 1.5 1.5h24a1.5 1.5 0 0 0 1.5-1.5v-5.5a1.5 1.5 0 0 0-1.5-1.5zm0 1h3v2.5h1v-2.5h3.25v3.9h1v-3.9h3.25v2.5h1v-2.5h3.25v3.9h1v-3.9H22v2.5h1v-2.5h3a.5.5 0 0 1 .5.5v5.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-5.5a.5.5 0 0 1 .5-.5z"
                       transform="rotate(-45 14 14)"></path>
                   </svg></span>
+              </b-button>
+
+              <b-button class="myBtn" @click="getPicture()" size="sm">
+                <span class="icon-GwQQdU8S"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.118 6a.5.5 0 0 0-.447.276L9.809 8H5.5A1.5 1.5 0 0 0 4 9.5v10A1.5 1.5 0 0 0 5.5 21h16a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 21.5 8h-4.309l-.862-1.724A.5.5 0 0 0 15.882 6h-4.764zm-1.342-.17A1.5 1.5 0 0 1 11.118 5h4.764a1.5 1.5 0 0 1 1.342.83L17.809 7H21.5A2.5 2.5 0 0 1 24 9.5v10a2.5 2.5 0 0 1-2.5 2.5h-16A2.5 2.5 0 0 1 3 19.5v-10A2.5 2.5 0 0 1 5.5 7h3.691l.585-1.17z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 18a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm0 1a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"></path></svg></span>
               </b-button>
               <b-button @click="createOverLay('priceLine')" class="myBtn" size="sm">
                 <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
@@ -122,6 +124,7 @@
             </b-button-group>
           </b-col>
           <b-col style="color:white" cols="4">
+            
             <b-table style="color:white;font-size: 10px;text-align: center;" small  :items="tradeList" :fields="traderFileds" head-variant="light">
               <template #cell(time)="data">
         {{ $moment(data.item.time).format("HH:mm:ss") }}
@@ -352,7 +355,31 @@ export default {
     };
   },
   methods: {
-    
+    saveOverlay(){
+
+    },
+   
+   async getPicture(){
+      let a= this.chart.getConvertPictureUrl(true,'png',"#161A1E")
+      const fetchRes = await fetch(a);
+       const blob = await fetchRes.blob();
+
+    // Tạo ClipboardItem từ Blob
+    const clipboardItem = new ClipboardItem({ "image/png": blob });
+
+    // Copy vào clipboard
+    try {
+        await navigator.clipboard.write([clipboardItem]);
+     
+        this.$bvToast.toast(`Copy ảnh vào clipboard`, {
+          title: 'Thông báo',
+          autoHideDelay: 500,
+          variant:'info'
+        })
+    } catch (error) {
+        console.error("Lỗi khi copy ảnh vào clipboard", error);
+    }
+    },
     saveParam(indicator,ref) {
       let type = indicator.type
       let val = this.$refs[ref].localValue
@@ -487,14 +514,7 @@ export default {
             this.chart.updateData(newData);
           };
         });
-        //
-        // var binance = new WebSocket(`wss://stream.binance.com:9443/ws/${this.symbol.toLowerCase()}@depth`);
-        // binance.onmessage = function (event) {
-
-        //     var stream = JSON.parse(event.data)
-        //    console.log(stream)
-
-        // }
+     
       }
       
     },
@@ -505,14 +525,9 @@ export default {
         //<symbol>@aggTrade
         let url_websocket_trade = `wss://fstream.binance.com/ws/${this.symbol.toLowerCase()}@aggTrade`;
         let websocket_trade = new WebSocket(url_websocket_trade);
-        websocket_trade.onopen = (event) => {
-            console.log(`có tradetrade`);
-          };
-          websocket_trade.openclose = (event) => {
-            console.log(`hết tradetrade`);
-          };
+     
+          
         websocket_trade.onmessage = (event) => {
-            console.log('a')
             const message = JSON.parse(event.data);
             this.tradeList.unshift({
               price:parseFloat(message.p),
@@ -590,7 +605,7 @@ export default {
 </script>
 <style>
 body,html{
-  background-color: rgb(22,26,30) !important;
+  background-color:rgb(22,26,30) !important;
   font-family: BinancePlex,Arial,sans-serif!important
 }
 .myBtn {
