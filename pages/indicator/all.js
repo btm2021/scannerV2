@@ -73,7 +73,55 @@ const myBot89 = {
     });
   },
 };
+const linear = {
+  name: "linear",
+  shortName: "linear",
+  calcParams: [200, 2],
+  figures: [
+    { key: "linear", title: "linear: ", type: "line" },
+  ],
+  regenerateFigures: (params) => {
+    return [
+      {
+        key: "ema1",
+        title: `Linear${params[0]}: `,
+        type: "circle",
+        styles: () => {
+          return {
+            color: "green",
+          };
+        },
+      }
+    ];
+  },
+  calc: (kLineDataList, { calcParams, figures }) => {
 
+    function linearRegression(values, period) {
+      let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+      for (let i = 0; i < period; i++) {
+          sumX += i;
+          sumY += values[i];
+          sumXY += i * values[i];
+          sumXX += i * i;
+      }
+      let slope = (period * sumXY - sumX * sumY) / (period * sumXX - sumX * sumX);
+      let intercept = (sumY - slope * sumX) / period;
+  
+      return { slope, intercept };
+  }
+  
+  
+  const closePrices = kLineDataList.map((k) => k.close);
+const period=calcParams[0]
+  let regression = linearRegression(closePrices, period);
+ 
+ console.log(result)
+  return {
+    linear: regression.intercept
+  }
+
+  },
+};
 const myBot34 = {
   name: "myBot34",
   shortName: "myBot",
@@ -693,4 +741,4 @@ function findPivotPatterns(pivotHighs, pivotLows) {
   return { HH, LH, HL, LL };
 }
 
-export { myBot34, myBot89, donchianIndicator, zigzag,supres,findHL,findHL1 };
+export {linear, myBot34, myBot89, donchianIndicator, zigzag,supres,findHL,findHL1 };

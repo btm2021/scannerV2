@@ -70,19 +70,33 @@
                   </svg></span>
               </b-button>
               <b-button @click="createOverLay('plan')" class="myBtn">
-                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
-                    height="28">
-                    <g fill="currentColor" fill-rule="nonzero">
-                      <path d="M7.5 6h13v-1h-13z" id="Line"></path>
-                      <path d="M7.5 23h13v-1h-13z"></path>
-                      <path d="M5 7.5v13h1v-13z"></path>
-                      <path d="M22 7.5v13h1v-13z"></path>
-                      <path
-                        d="M5.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM22.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM22.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM5.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z">
-                      </path>
-                    </g>
-                  </svg></span>
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor"><path fill-rule="nonzero" d="M6.5 23v1h17.5v-17.5h-1v16.5z"></path><path fill-rule="nonzero" d="M21.5 5v-1h-17.5v17.5h1v-16.5z"></path><path fill-rule="nonzero" d="M4.5 25c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM23.5 6c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"></path><path fill-rule="nonzero" d="M13 9v13h1v-13z" id="Line"></path><path d="M13.5 6l2.5 3h-5z"></path><path fill-rule="nonzero" d="M19 14h-13v1h13z"></path><path d="M19 17v-5l3 2.5z"></path></g></svg></span>
+            
+                </b-button>
+              <b-button @click="createOverLay('priceChannelLine')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="nonzero"><path d="M8.354 18.354l10-10-.707-.707-10 10zM12.354 25.354l5-5-.707-.707-5 5z"></path><path d="M20.354 17.354l5-5-.707-.707-5 5z"></path><path d="M19.5 8c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM6.5 21c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM18.5 20c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"></path></g></svg></span>
               </b-button>
+              <b-button @click="createOverLay('anyWaves')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><path fill="currentColor" d="M11 10.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm4 7a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm11-8.8V13h1V7h-6v1h4.3l-7.42 7.41a2.49 2.49 0 0 0-2.76 0l-3.53-3.53a2.5 2.5 0 1 0-4.17 0L1 18.29l.7.71 6.42-6.41a2.49 2.49 0 0 0 2.76 0l3.53 3.53a2.5 2.5 0 1 0 4.17 0z"></path></svg></span>
+              </b-button>
+              <b-button @click="createOverLay('triangle')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="nonzero"><path d="M8.5 23h11v-1h-11zM6 8.5v12h1v-12zM7.483 8.28l12.293 13.112.73-.684-12.293-13.112z"></path><path d="M6.5 8c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM6.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM21.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"></path></g></svg></span>
+              </b-button>
+              <b-button @click="createOverLay('segment')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="nonzero"><path d="M7.354 21.354l14-14-.707-.707-14 14z"></path><path d="M22.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM5.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"></path></g></svg></span>
+              </b-button>
+              <b-button class="myBtn"  v-b-modal.modal-calc>
+                <span class="iconContainer-dmpvVypS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.62 11.48c1.08-.56 1.77-1.54 1.61-3.18-.2-2.24-2.05-2.99-4.49-3.2V2h-1.9v3.02c-.48 0-.99 0-1.5.02V2H8.46v3.1c-.7.02-1.5.01-3.8 0v2.02c1.5-.03 2.28-.12 2.46.84v8.5c-.12.75-.72.64-2.08.62l-.38 2.25 3.8.01V22h1.9v-2.62l1.5.01V22h1.9v-2.66c3.17-.17 5.3-.97 5.58-3.96.22-2.4-.92-3.47-2.71-3.9Zm-6.24-4.22c1.07 0 4.42-.34 4.42 1.9 0 2.12-3.35 1.87-4.42 1.87V7.26Zm0 9.83v-4.16c1.28 0 5.2-.36 5.2 2.08 0 2.35-3.92 2.08-5.2 2.08Z"></path></svg></span>
+              </b-button>
+            
+              <b-button @click="createOverLay('makeLong')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28" fill="none"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M4.5 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 6.5A2.5 2.5 0 0 1 6.95 6H24v1H6.95A2.5 2.5 0 0 1 2 6.5zM4.5 15a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 16.5a2.5 2.5 0 0 1 4.95-.5h13.1a2.5 2.5 0 1 1 0 1H6.95A2.5 2.5 0 0 1 2 16.5zM22.5 15a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-18 6a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 22.5a2.5 2.5 0 0 1 4.95-.5H24v1H6.95A2.5 2.5 0 0 1 2 22.5z"></path><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M22.4 8.94l-1.39.63-.41-.91 1.39-.63.41.91zm-4 1.8l-1.39.63-.41-.91 1.39-.63.41.91zm-4 1.8l-1.4.63-.4-.91 1.39-.63.41.91zm-4 1.8l-1.4.63-.4-.91 1.39-.63.41.91z"></path></svg></span>
+              </b-button>
+
+              <b-button @click="createOverLay('makeShort')" class="myBtn">
+                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28" fill="none"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M4.5 24a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 22.5a2.5 2.5 0 0 0 4.95.5H24v-1H6.95a2.5 2.5 0 0 0-4.95.5zM4.5 14a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 12.5a2.5 2.5 0 0 0 4.95.5h13.1a2.5 2.5 0 1 0 0-1H6.95a2.5 2.5 0 0 0-4.95.5zM22.5 14a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-18-6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 6.5a2.5 2.5 0 0 0 4.95.5H24V6H6.95A2.5 2.5 0 0 0 2 6.5z"></path><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M22.4 20.06l-1.39-.63-.41.91 1.39.63.41-.91zm-4-1.8l-1.39-.63-.41.91 1.39.63.41-.91zm-4-1.8l-1.4-.63-.4.91 1.39.63.41-.91zm-4-1.8L9 14.03l-.4.91 1.39.63.41-.91z"></path></svg></span>
+              </b-button>
+              
               <b-button class="myBtn" v-b-modal.modal-indicator>
                 <span class="icon-jFqVJoPk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
                     height="28">
@@ -107,45 +121,22 @@
               </b-button>
             </b-button-group>
           </b-col>
-          <b-col cols="10">
-           
+          <b-col style="color:white" cols="4">
+            <b-table style="color:white;font-size: 10px;text-align: center;" small  :items="tradeList" :fields="traderFileds" head-variant="light">
+              <template #cell(time)="data">
+        {{ $moment(data.item.time).format("HH:mm:ss") }}
+      </template>
+      <template #cell(price)="data">
+      <span :class="(!data.item.isBuyerMaker)?'text-success':'text-danger'" >{{ data.item.price }}</span>
+      </template>
+            </b-table>
           </b-col>
         </b-row>
       </b-col>
-      <b-col cols="2">
-
-        <div class="flex justify-center items-center min-h-[6rem]">
-       <div v-if="!pending" class="grid grid-cols-2 gap-x-2 font-mono text-right w-full">
-      <slot name="beforeOrderbook" />
-      <div class="grid grid-cols-2">
-        <span>Size</span>
-        <span>Bid</span>
-      </div>
-      <div class="grid grid-cols-2">
-        <span>Ask</span>
-        <span>Size</span>
-      </div>
-      <div
-        v-for="item in displayItems"
-        :key="item"
-        class="grid grid-cols-2 hover hover:bg-gray-100 cursor-pointer"
-        @click="onClick(item)"
-      >
-        <span :class="sideToSpanClass(item.side) + ' ' + itemToSpanClass(item)">{{
-          item.side === 'bid' ? item.sizeDisplay : item.price
-        }}</span>
-        <span :class="sideToSpanClass(item.side) + ' ' + itemToSpanClass(item)">{{
-          item.side == 'bid' ? item.price : item.sizeDisplay
-        }}</span>
-      </div>
-      <slot name="afterOrderbook" />
-    </div>
-    <div v-else>
-      <progress class="progress progress-primary w-56"></progress>
-    </div>
-  </div>
-      </b-col>
-
+    
+      <b-modal id="modal-calc" title="calc">
+        calc
+      </b-modal>
       <b-modal scrollable id="modal-indicator" title="Indicator">
         <b-table :fields="fieldsIndicator" striped hover :items="listIndicator" small>
           <template #cell(name)="data">
@@ -181,10 +172,10 @@
       
 <script>
 import * as klinecharts from "klinecharts";
-import { rect, rule,plan } from './overlay/all.js'
-import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1 } from './indicator/all.js'
-const listOverLay = [rect, rule,plan]
-const listIndicator = [myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
+import { rect, rule,plan,anyWaves,triangle } from './overlay/all.js'
+import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,linear } from './indicator/all.js'
+const listOverLay = [rect, rule,plan,anyWaves,triangle]
+const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
 
 // var smcIndicator1 = {
 //   name: "SMC1",
@@ -311,6 +302,12 @@ var binanceSocket;
 export default {
   data() {
     return {
+      traderFileds:[
+        {key:'price',label:'Price(USDT)'},
+        {key:'qty',label:'Amount'},
+        {key:'time',label:'time'}
+      ],
+      tradeList:[],
       displayItems:[],
       pending:false,
       dataReady:false,
@@ -450,7 +447,7 @@ export default {
             klinecharts.registerIndicator(i);
           })
 
-          chart.setPriceVolumePrecision(optionFromExchange.pricePrecision, 10);
+          chart.setPriceVolumePrecision(optionFromExchange.pricePrecision,optionFromExchange.pricePrecision );
           chart = chart;
           window.addEventListener("resize", () => {
             this.chart.resize();
@@ -459,8 +456,7 @@ export default {
           //gọi stream
           let binanceStreamURL = `wss://fstream.binance.com/ws/${this.symbol.toLowerCase()}@kline_${this.timeframe
             }`;
-          binanceSocket = `wss://stream.binance.com:443`;
-
+         
           binanceSocket = new WebSocket(binanceStreamURL);
           binanceSocket.onopen = (event) => {
             console.log(`Subcired to ${this.symbol} - ${this.timeframe}`);
@@ -502,6 +498,33 @@ export default {
       }
       
     },
+    getTrader(){
+      let url = 'https://fapi.binance.com/fapi/v1/trades?symbol=IMXUSDT&limit=20'
+      this.$axios.get(url).then(data=>{
+        this.tradeList=(data.data).reverse() 
+        //<symbol>@aggTrade
+        let url_websocket_trade = `wss://fstream.binance.com/ws/${this.symbol.toLowerCase()}@aggTrade`;
+        let websocket_trade = new WebSocket(url_websocket_trade);
+        websocket_trade.onopen = (event) => {
+            console.log(`có tradetrade`);
+          };
+          websocket_trade.openclose = (event) => {
+            console.log(`hết tradetrade`);
+          };
+        websocket_trade.onmessage = (event) => {
+            console.log('a')
+            const message = JSON.parse(event.data);
+            this.tradeList.unshift({
+              price:parseFloat(message.p),
+              qty:parseFloat(message.q),
+              time:message.T,
+              isBuyerMaker:message.m
+            })
+            this.tradeList.pop()
+            
+          };
+      })
+    }
   },
   unmounted() {
     console.log("Unmounted");
@@ -517,6 +540,7 @@ export default {
     this.exchange = exchange;
     document.getElementById("chart").setAttribute('data-value', `${symbol}-${timeframe}`);
     this.initChart();
+    this.getTrader()
   },
   computed: {
     list_indicator() {
@@ -527,7 +551,15 @@ export default {
     list_indicator(newV, oldV) {
       this.dataReady=true
       this.listIndicator = JSON.parse(JSON.stringify(newV))
-      //
+      // override symbol calcParams
+      
+
+//       let symbolConfig = this.$store.state.db.list_symbol_db.find(i=>i.symbol===this.symbol)
+// console.log(symbolConfig)
+
+//       let configAtTimeframe = symbolConfig.indicator[this.timeframe]
+      
+      
       if (this.chart) {
         this.listIndicator.forEach(item => {
 
@@ -559,6 +591,7 @@ export default {
 <style>
 body,html{
   background-color: rgb(22,26,30) !important;
+  font-family: BinancePlex,Arial,sans-serif!important
 }
 .myBtn {
   width: 100%;
