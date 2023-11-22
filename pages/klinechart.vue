@@ -91,13 +91,6 @@
                 <span class="iconContainer-dmpvVypS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.62 11.48c1.08-.56 1.77-1.54 1.61-3.18-.2-2.24-2.05-2.99-4.49-3.2V2h-1.9v3.02c-.48 0-.99 0-1.5.02V2H8.46v3.1c-.7.02-1.5.01-3.8 0v2.02c1.5-.03 2.28-.12 2.46.84v8.5c-.12.75-.72.64-2.08.62l-.38 2.25 3.8.01V22h1.9v-2.62l1.5.01V22h1.9v-2.66c3.17-.17 5.3-.97 5.58-3.96.22-2.4-.92-3.47-2.71-3.9Zm-6.24-4.22c1.07 0 4.42-.34 4.42 1.9 0 2.12-3.35 1.87-4.42 1.87V7.26Zm0 9.83v-4.16c1.28 0 5.2-.36 5.2 2.08 0 2.35-3.92 2.08-5.2 2.08Z"></path></svg></span>
               </b-button>
             
-              <b-button @click="createOverLay('makeLong')" class="myBtn">
-                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28" fill="none"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M4.5 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 6.5A2.5 2.5 0 0 1 6.95 6H24v1H6.95A2.5 2.5 0 0 1 2 6.5zM4.5 15a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 16.5a2.5 2.5 0 0 1 4.95-.5h13.1a2.5 2.5 0 1 1 0 1H6.95A2.5 2.5 0 0 1 2 16.5zM22.5 15a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-18 6a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2 22.5a2.5 2.5 0 0 1 4.95-.5H24v1H6.95A2.5 2.5 0 0 1 2 22.5z"></path><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M22.4 8.94l-1.39.63-.41-.91 1.39-.63.41.91zm-4 1.8l-1.39.63-.41-.91 1.39-.63.41.91zm-4 1.8l-1.4.63-.4-.91 1.39-.63.41.91zm-4 1.8l-1.4.63-.4-.91 1.39-.63.41.91z"></path></svg></span>
-              </b-button>
-
-              <b-button @click="createOverLay('makeShort')" class="myBtn">
-                <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28" fill="none"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M4.5 24a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 22.5a2.5 2.5 0 0 0 4.95.5H24v-1H6.95a2.5 2.5 0 0 0-4.95.5zM4.5 14a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 12.5a2.5 2.5 0 0 0 4.95.5h13.1a2.5 2.5 0 1 0 0-1H6.95a2.5 2.5 0 0 0-4.95.5zM22.5 14a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-18-6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM2 6.5a2.5 2.5 0 0 0 4.95.5H24V6H6.95A2.5 2.5 0 0 0 2 6.5z"></path><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M22.4 20.06l-1.39-.63-.41.91 1.39.63.41-.91zm-4-1.8l-1.39-.63-.41.91 1.39.63.41-.91zm-4-1.8l-1.4-.63-.4.91 1.39.63.41-.91zm-4-1.8L9 14.03l-.4.91 1.39.63.41-.91z"></path></svg></span>
-              </b-button>
               
               <b-button class="myBtn" v-b-modal.modal-indicator>
                 <span class="icon-jFqVJoPk"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28"
@@ -123,7 +116,7 @@
               </b-button>
             </b-button-group>
           </b-col>
-          <b-col style="color:white" cols="4">
+          <b-col style="color:white" cols="10">
             
             <b-table style="color:white;font-size: 10px;text-align: center;" small  :items="tradeList" :fields="traderFileds" head-variant="light">
               <template #cell(time)="data">
@@ -134,11 +127,41 @@
       </template>
             </b-table>
           </b-col>
+          <b-col cols="12">
+            <b-textarea style="width:100%" v-model="textNote" @keyup.enter="saveNote()"></b-textarea>
+          </b-col>
         </b-row>
       </b-col>
-    
+    <b-col cols="12">
+      <b-row no-gutters>
+        <b-col cols="8">
+          <b-card>
+            <h4>Thời gian hiện tại</h4>
+            <b-card-body>
+              
+            </b-card-body>
+          </b-card>
+        </b-col>
+        <b-col cols="4">
+          <b-table :fields="noteFields" show-empty style="color:white;font-size: 10px;" small  :items="listNote">
+            
+            <template #cell(action)="data">
+            
+            <b-badge @click="editNote(data.item)" variant="warning">Edit</b-badge>
+            <b-badge @click="deleteNote(data.item)" variant="danger">X</b-badge>
+         </template>
+          </b-table>
+         
+
+        </b-col>
+        <b-col cols="3">    
+ </b-col>
+        
+      </b-row>
+
+    </b-col>
       <b-modal id="modal-calc" title="calc">
-        calc
+        <calc></calc>
       </b-modal>
       <b-modal scrollable id="modal-indicator" title="Indicator">
         <b-table :fields="fieldsIndicator" striped hover :items="listIndicator" small>
@@ -179,7 +202,7 @@ import { rect, rule,plan,anyWaves,triangle } from './overlay/all.js'
 import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,linear } from './indicator/all.js'
 const listOverLay = [rect, rule,plan,anyWaves,triangle]
 const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
-
+import calc from '~/components/calc.vue'
 // var smcIndicator1 = {
 //   name: "SMC1",
 //   shortName: "SMC1",
@@ -301,10 +324,31 @@ const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findH
 //   },
 // };
 
+let dbKey = "c0rbxvksqs9_oMTog1mCfFx79sSEyW1aDNA9Gf1GNeHT";
+let vantaKey='P1CHE11WCLZNLHC5'
 var binanceSocket;
 export default {
+  components:{
+calc
+  },
   data() {
     return {
+      isEditNote:false,
+      keyNote:null,
+      noteFields:[
+      {key:'note',
+    
+      thStyle: { width: "90%" },},
+      ,{
+        key:'action',
+        label:'Action',
+
+      thStyle: { width: "10%" },
+      }
+     
+      ],
+      textNote:'',
+      listNote:[],
       traderFileds:[
         {key:'price',label:'Price(USDT)'},
         {key:'qty',label:'Amount'},
@@ -355,10 +399,115 @@ export default {
     };
   },
   methods: {
-    saveOverlay(){
-
+    editNote(note){
+      this.textNote=note.note
+      this.isEditNote=true
+      this.keyNote=note.key
     },
-   
+    deleteNote(node){
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/ghichu/items/"+node.key;
+      
+      this.$axios
+        .delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": dbKey,
+          },
+        })
+        .then((data) => {
+          console.log('delete success')
+          this.getNote()
+        });
+    },
+    getNote(){
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/ghichu/query";
+      let body = {
+        query: [
+          {
+           timeframe:this.timeframe,
+           symbol:this.symbol
+          },
+        ],
+        sort:'time'
+      };
+      this.$axios
+        .post(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": dbKey,
+          },
+        })
+        .then((data) => {
+          this.listNote=data.data.items
+        
+        });
+    },
+   saveNote(){
+
+    if(this.isEditNote){
+    
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/ghichu/items";
+      let body = {
+        
+   // array of items to put
+  items: [
+        {
+          
+          symbol:this.symbol,
+          timeframe:this.timeframe,
+          time:(new Date()).getTime(),
+          note:this.textNote,
+          key:this.keyNote
+        },
+        // rest of items
+    ]
+
+      };
+      this.$axios
+        .put(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": dbKey,
+          },
+        })
+        .then((data) => {
+          console.log('write success')
+          this.getNote()
+          this.textNote=''
+          this.isEditNote=false
+        });
+    }else{
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/ghichu/items";
+      let body = {
+        
+   // array of items to put
+  items: [
+        {
+          
+          symbol:this.symbol,
+          timeframe:this.timeframe,
+          time:(new Date()).getTime(),
+          note:this.textNote
+        },
+        // rest of items
+    ]
+
+      };
+      this.$axios
+        .put(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-Key": dbKey,
+          },
+        })
+        .then((data) => {
+          console.log('write success')
+          this.getNote()
+          this.textNote=''
+        });
+    }
+    
+   },
    async getPicture(){
       let a= this.chart.getConvertPictureUrl(true,'png',"#161A1E")
       const fetchRes = await fetch(a);
@@ -556,6 +705,7 @@ export default {
     document.getElementById("chart").setAttribute('data-value', `${symbol}-${timeframe}`);
     this.initChart();
     this.getTrader()
+    this.getNote()
   },
   computed: {
     list_indicator() {
@@ -566,14 +716,7 @@ export default {
     list_indicator(newV, oldV) {
       this.dataReady=true
       this.listIndicator = JSON.parse(JSON.stringify(newV))
-      // override symbol calcParams
-      
-
-//       let symbolConfig = this.$store.state.db.list_symbol_db.find(i=>i.symbol===this.symbol)
-// console.log(symbolConfig)
-
-//       let configAtTimeframe = symbolConfig.indicator[this.timeframe]
-      
+    
       
       if (this.chart) {
         this.listIndicator.forEach(item => {

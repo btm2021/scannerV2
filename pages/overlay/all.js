@@ -59,10 +59,27 @@ const rule = {
 
             const valueDif =
                 ((points[1].value - points[0].value) / points[1].value) * 100;
-            const pnl=((points[1].value -points[0].value) * 200 * 20).toFixed(1)
-           
-    let roe  = ((parseFloat(pnl) / 4000) * 100).toFixed(1);
-            
+          
+            function calcPNL(price1,price2,levage=20,money = 200) {
+                /*Unrealized PNL = position size * direction of order * (mark price - entry price)
+          ROE% =Unrealized PNL in USDT / entry margin = ( ( mark Price - entry Price ) * direction of order * size ) / （position_amount * contract_multiplier * mark_price* IMR）
+          */
+                let entryPrice = price1
+                let exitPrice = price2
+                let margin =money*levage
+                let side = 1
+                let unPNL = (margin / entryPrice) * side * (exitPrice - entryPrice)
+                let ROE = (unPNL / margin * 100 * levage)
+                return {
+                    pnl: unPNL,
+                    roe: ROE
+                }
+            }
+            let result = calcPNL(points[1].value, points[0].value, 20,200);
+          
+            let roe = result.roe.toFixed(1)
+            let pnl = result.pnl.toFixed(1)
+
             return [
                 {
                     type: "line",
@@ -73,7 +90,7 @@ const rule = {
                     isCheckEvent: false,
                     attrs: {
                         x: coordinates[0].x,
-                        y: coordinates[1].y,
+                        y: coordinates[1].y-20,
                         text: `${Math.abs(valueDif.toFixed(1))}% ${Math.abs(pnl)} USDT ${Math.abs(roe)}%`,
                         baseline: "top",
                     },
@@ -82,7 +99,7 @@ const rule = {
                     type: "text",
                     isCheckEvent: false,
                     attrs: {
-                        x: coordinates[0].x-40,
+                        x: coordinates[0].x - 40,
                         y: coordinates[0].y,
                         text: points[0].value.toFixed(3),
                         baseline: "top",
@@ -223,20 +240,20 @@ const triangle = {
     needDefaultXAxisFigure: true,
     needDefaultYAxisFigure: true,
     styles: {
-      polygon: {
-        color: 'rgba(22, 119, 255, 0.15)'
-      }
+        polygon: {
+            color: 'rgba(22, 119, 255, 0.15)'
+        }
     },
     createPointFigures: ({ coordinates }) => {
-      return [
-        {
-          type: 'polygon',
-          attrs: { coordinates },
-          styles: { style: 'stroke_fill' }
-        }
-      ]
+        return [
+            {
+                type: 'polygon',
+                attrs: { coordinates },
+                styles: { style: 'stroke_fill' }
+            }
+        ]
     }
-  }
-  
-  export default triangle
-export { rect, rule, plan,anyWaves,triangle};
+}
+
+export default triangle
+export { rect, rule, plan, anyWaves, triangle };

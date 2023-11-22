@@ -9,10 +9,15 @@
         <b-nav-item href="#h4" @click="scrollIntoView">4H</b-nav-item>
         <b-nav-item href="#d1" @click="scrollIntoView">1D</b-nav-item>
         <b-nav-item href="#tdv" @click="scrollIntoView">Main</b-nav-item>
+        <b-nav-item v-b-toggle.modal-calc>Calc</b-nav-item>
         <b-nav-item v-b-toggle.priceStream>Giá</b-nav-item>
         <b-nav-item v-b-toggle.screener>Screener</b-nav-item>
       </b-nav>
-
+<b-modal id="modal-calc">
+  <div>
+    <calc/>
+  </div>
+</b-modal>
       <b-card-body
         id="nav-scroller"
         ref="content"
