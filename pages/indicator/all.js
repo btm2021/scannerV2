@@ -1,3 +1,126 @@
+// var smcIndicator1 = {
+//   name: "SMC1",
+//   shortName: "SMC1",
+//   calcParams: [15, 2],
+//   figures: [{ key: "HH", title: "HL: ", type: "text" }],
+//   calc: (data, { calcParams }) => {
+//     let lookback = calcParams[0];
+//     let lastPivotHigh = null;
+//     let lastPivotLow = null;
+//     const pivots = { HH: [], HL: [], LL: [], LH: [] };
+
+//     for (let i = lookback; i < data.length - lookback; i++) {
+//       let isHH = true;
+//       let isLL = true;
+//       for (let j = 1; j <= lookback; j++) {
+//         if (
+//           data[i - j].high >= data[i].high ||
+//           data[i + j].high >= data[i].high
+//         ) {
+//           isHH = false;
+//         }
+//         if (data[i - j].low <= data[i].low || data[i + j].low <= data[i].low) {
+//           isLL = false;
+//         }
+//       }
+
+//       if (isHH) {
+//         pivots.HH.push({ index: i, value: data[i].high });
+//       }
+//       if (isLL) {
+//         pivots.LL.push({ index: i, value: data[i].low });
+//       }
+
+//       // HL and LH are determined by comparing to previous HH and LL
+//       if (i > 0) {
+//         if (
+//           data[i].low > data[i - 1].low &&
+//           data[i - 1].low < pivots.LL[pivots.LL.length - 1]?.value
+//         ) {
+//           pivots.HL.push({ index: i, value: data[i].low });
+//         }
+//         if (
+//           data[i].high < data[i - 1].high &&
+//           data[i - 1].high > pivots.HH[pivots.HH.length - 1]?.value
+//         ) {
+//           pivots.LH.push({ index: i, value: data[i].high });
+//         }
+//       }
+//     }
+
+//     const figures = [];
+//     console.log(pivots);
+
+//     pivots.HH.forEach((pivot) => {
+//       console.log(pivot);
+//       figures.push({
+//         HH: {
+//           value: [
+//             calculateXCoordinate(pivot.index, chartDimensions),
+//             calculateYCoordinate(pivot.value, chartDimensions),
+//           ],
+//         },
+//       });
+//     });
+//     return figures;
+//   },
+// };
+
+// var smcIndicator = {
+//   name: "SMC",
+//   shortName: "SMC",
+//   calcParams: [5], // default deviation for zigzag
+//   figures: [
+//     { key: "zigzag", title: "ZigZag", type: "line" },
+//     { key: "bos", title: "BOS", type: "line" },
+//     { key: "choch", title: "CHoCH", type: "line" },
+//   ],
+//   regenerateFigures: (params) => {
+//     return [
+//       { key: "zigzag", title: "ZigZag", type: "line" },
+//       { key: "bos", title: "BOS", type: "line" },
+//       { key: "choch", title: "CHoCH", type: "line" },
+//     ];
+//   },
+//   calc: (kLineDataList, { calcParams }) => {
+//     const deviation = calcParams[0];
+//     const zigzagValues = zigzag(kLineDataList, deviation);
+//     const bosLine = [];
+//     const chochLine = [];
+//     let previousType = null;
+
+//     for (let i = 1; i < zigzagValues.length; i++) {
+//       const currentZigzag = zigzagValues[i];
+//       const previousZigzag = zigzagValues[i - 1];
+
+//       // Check for BOS and CHoCH
+//       if (currentZigzag.deviation > 0 && previousZigzag.deviation < 0) {
+//         bosLine[i] = currentZigzag.value;
+//         previousType = "BOS";
+//       } else if (currentZigzag.deviation < 0 && previousZigzag.deviation > 0) {
+//         chochLine[i] = currentZigzag.value;
+//         previousType = "CHoCH";
+//       } else {
+//         if (previousType === "BOS") {
+//           bosLine[i] = (bosLine[i - 1] + currentZigzag.value) / 2;
+//         } else if (previousType === "CHoCH") {
+//           chochLine[i] = (chochLine[i - 1] + currentZigzag.value) / 2;
+//         }
+//       }
+//     }
+
+//     return kLineDataList.map((_, i) => {
+//       return {
+//         zigzag: zigzagValues[i]?.value || null,
+//         bos: bosLine[i],
+//         choch: chochLine[i],
+//       };
+//     });
+//   },
+// };
+
+import { IndicatorsNormalized } from "@ixjb94/indicators/dist/indicators-browser"
+const ta = new IndicatorsNormalized()
 
 const myBot89 = {
   name: "myBot89",
@@ -76,51 +199,23 @@ const myBot89 = {
 const linear = {
   name: "linear",
   shortName: "linear",
-  calcParams: [200, 2],
+  calcParams: [100, 2],
   figures: [
-    { key: "linear", title: "linear: ", type: "line" },
+    { key: 'normalLig', title: 'Normal: ', type: 'line' },
+
+    // { key: 'decayLig', title: 'Decay: ', type: 'line' }
   ],
-  regenerateFigures: (params) => {
-    return [
-      {
-        key: "ema1",
-        title: `Linear${params[0]}: `,
-        type: "circle",
-        styles: () => {
-          return {
-            color: "green",
-          };
-        },
+  calc: async (kLineDataList, { calcParams, figures }) => {
+    let close = kLineDataList.map(item => item.close)
+    let normal = await ta.linreg(close, calcParams[0])
+    let decay = await ta.decay(close, calcParams[0])
+    return kLineDataList.map((kLineData, i) => {
+      return {
+        normalLig: normal[i],
+        decayLig: decay[i]
       }
-    ];
-  },
-  calc: (kLineDataList, { calcParams, figures }) => {
-
-    function linearRegression(values, period) {
-      let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-      for (let i = 0; i < period; i++) {
-          sumX += i;
-          sumY += values[i];
-          sumXY += i * values[i];
-          sumXX += i * i;
-      }
-      let slope = (period * sumXY - sumX * sumY) / (period * sumXX - sumX * sumX);
-      let intercept = (sumY - slope * sumX) / period;
-  
-      return { slope, intercept };
+    })
   }
-  
-  
-  const closePrices = kLineDataList.map((k) => k.close);
-const period=calcParams[0]
-  let regression = linearRegression(closePrices, period);
- 
- console.log(result)
-  return {
-    linear: regression.intercept
-  }
-
-  },
 };
 const myBot34 = {
   name: "myBot34",
@@ -154,9 +249,9 @@ const myBot34 = {
       },
     ];
   },
-  calc: (kLineDataList, { calcParams, figures }) => {
+  calc: async (kLineDataList, { calcParams, figures }) => {
     const prevEMAs = Array(calcParams.length).fill(0);
-    const emaResults = [];
+    let emaResults = [];
     const closePrices = kLineDataList.map((k) => k.close);
 
     // Calculate the first EMA
@@ -167,7 +262,11 @@ const myBot34 = {
       emaResults.push(currentEma);
       prevEMAs[0] = currentEma;
     });
+    //lig
+    emaResults = await ta.linreg(closePrices, calcParams[0])
 
+    emaResults = await ta.lag(closePrices, calcParams[0])
+    
     // Calculate Trail2 based on the first EMA
     const t2Results = Array(emaResults.length).fill(0);
     const multi = calcParams[1]; // This is the multiplier for SL in percentage
@@ -196,6 +295,80 @@ const myBot34 = {
     });
   },
 };
+// const myBot34 = {
+//   name: "myBot34",
+//   shortName: "myBot",
+//   calcParams: [14, 2],
+//   figures: [
+//     { key: "ema1", title: "EMA5: ", type: "line" },
+//     { key: "trail2", title: "Trail2: ", type: "line" },
+//   ],
+//   regenerateFigures: (params) => {
+//     return [
+//       {
+//         key: "ema1",
+//         title: `EMA${params[0]}: `,
+//         type: "line",
+//         styles: () => {
+//           return {
+//             color: "green",
+//           };
+//         },
+//       },
+//       {
+//         key: "trail2",
+//         title: "EMA2: ",
+//         type: "line",
+//         styles: () => {
+//           return {
+//             color: "red",
+//           };
+//         },
+//       },
+//     ];
+//   },
+//   calc: (kLineDataList, { calcParams, figures }) => {
+//     const prevEMAs = Array(calcParams.length).fill(0);
+//     const emaResults = [];
+//     const closePrices = kLineDataList.map((k) => k.close);
+
+//     // Calculate the first EMA
+//     closePrices.forEach((close, i) => {
+//       const multiplier = 2 / (calcParams[0] + 1);
+//       const currentEma =
+//         (close - (prevEMAs[0] || close)) * multiplier + (prevEMAs[0] || close);
+//       emaResults.push(currentEma);
+//       prevEMAs[0] = currentEma;
+//     });
+
+//     // Calculate Trail2 based on the first EMA
+//     const t2Results = Array(emaResults.length).fill(0);
+//     const multi = calcParams[1]; // This is the multiplier for SL in percentage
+//     for (let i = 1; i < emaResults.length; i++) {
+//       const t1 = emaResults[i];
+//       const sl = t1 * (multi / 100);
+//       const prevT2 = t2Results[i - 1] || 0;
+//       let iff1 = t1 > prevT2 ? t1 - sl : t1 + sl;
+//       let iff2 =
+//         t1 < prevT2 && emaResults[i - 1] < prevT2
+//           ? Math.min(prevT2, t1 + sl)
+//           : iff1;
+//       let iff3 =
+//         t1 > prevT2 && emaResults[i - 1] > prevT2
+//           ? Math.max(prevT2, t1 - sl)
+//           : iff2;
+//       t2Results[i] = iff3;
+//     }
+//     t2Results[0] = closePrices[0];
+//     // Return the combined results
+//     return kLineDataList.map((_, i) => {
+//       return {
+//         [figures[0].key]: emaResults[i],
+//         [figures[1].key]: t2Results[i],
+//       };
+//     });
+//   },
+// };
 var donchianIndicator = {
   name: "DONCHIAN",
   series: "price",
@@ -741,4 +914,4 @@ function findPivotPatterns(pivotHighs, pivotLows) {
   return { HH, LH, HL, LL };
 }
 
-export {linear, myBot34, myBot89, donchianIndicator, zigzag,supres,findHL,findHL1 };
+export { linear, myBot34, myBot89, donchianIndicator, zigzag, supres, findHL, findHL1 };

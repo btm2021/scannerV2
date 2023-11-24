@@ -1,6 +1,5 @@
 
 export default {
-  mode: 'universal',
   ssr: false,
   /*
   ** Headers of the page
@@ -16,7 +15,7 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ],
     script: [
-      { src: '/datafeeds/udf/dist/bundle.js' }
+      { src: '/bundle.js' }
     ]
 
   },
@@ -39,7 +38,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    'nuxt-vite'
+   
   ],
   /*
   ** Nuxt.js modules

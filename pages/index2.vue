@@ -11,8 +11,11 @@
         <b-nav-item href="#tdv" @click="scrollIntoView">Main</b-nav-item>
         <b-nav-item v-b-toggle.modal-calc>Calc</b-nav-item>
         <b-nav-item v-b-toggle.priceStream>Giá</b-nav-item>
-        <b-nav-item v-b-toggle.screener>Screener</b-nav-item>
+        <b-nav-item v-b-toggle.modal-config>Config</b-nav-item>
       </b-nav>
+<b-modal id="modal-config">
+
+</b-modal>
 <b-modal id="modal-calc">
   <div>
     <calc/>

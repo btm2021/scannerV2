@@ -87,6 +87,9 @@
               <b-button @click="createOverLay('segment')" class="myBtn">
                 <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28"><g fill="currentColor" fill-rule="nonzero"><path d="M7.354 21.354l14-14-.707-.707-14 14z"></path><path d="M22.5 7c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM5.5 24c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5zm0 1c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5z"></path></g></svg></span>
               </b-button>
+              <b-button class="myBtn"  v-b-modal.modal-config>
+                <span class="iconContainer-dmpvVypS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.62 11.48c1.08-.56 1.77-1.54 1.61-3.18-.2-2.24-2.05-2.99-4.49-3.2V2h-1.9v3.02c-.48 0-.99 0-1.5.02V2H8.46v3.1c-.7.02-1.5.01-3.8 0v2.02c1.5-.03 2.28-.12 2.46.84v8.5c-.12.75-.72.64-2.08.62l-.38 2.25 3.8.01V22h1.9v-2.62l1.5.01V22h1.9v-2.66c3.17-.17 5.3-.97 5.58-3.96.22-2.4-.92-3.47-2.71-3.9Zm-6.24-4.22c1.07 0 4.42-.34 4.42 1.9 0 2.12-3.35 1.87-4.42 1.87V7.26Zm0 9.83v-4.16c1.28 0 5.2-.36 5.2 2.08 0 2.35-3.92 2.08-5.2 2.08Z"></path></svg></span>
+              </b-button>
               <b-button class="myBtn"  v-b-modal.modal-calc>
                 <span class="iconContainer-dmpvVypS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16.62 11.48c1.08-.56 1.77-1.54 1.61-3.18-.2-2.24-2.05-2.99-4.49-3.2V2h-1.9v3.02c-.48 0-.99 0-1.5.02V2H8.46v3.1c-.7.02-1.5.01-3.8 0v2.02c1.5-.03 2.28-.12 2.46.84v8.5c-.12.75-.72.64-2.08.62l-.38 2.25 3.8.01V22h1.9v-2.62l1.5.01V22h1.9v-2.66c3.17-.17 5.3-.97 5.58-3.96.22-2.4-.92-3.47-2.71-3.9Zm-6.24-4.22c1.07 0 4.42-.34 4.42 1.9 0 2.12-3.35 1.87-4.42 1.87V7.26Zm0 9.83v-4.16c1.28 0 5.2-.36 5.2 2.08 0 2.35-3.92 2.08-5.2 2.08Z"></path></svg></span>
               </b-button>
@@ -136,10 +139,13 @@
       <b-row no-gutters>
         <b-col cols="8">
           <b-card>
-            <h4>Thời gian hiện tại</h4>
-            <b-card-body>
-              
-            </b-card-body>
+          <div id="subChart">
+            <h6>Chu kì hiện tại</h6>
+            <div id="chartCurrent" style="width: 100%; height: 600px; background-color:#171b26;"></div>
+            <h6>Chu kì trước đó</h6>
+            <div id="chartPre" style="width: 100%; height: 600px; background-color:#171b26;"></div>
+   
+          </div>
           </b-card>
         </b-col>
         <b-col cols="4">
@@ -190,6 +196,28 @@
           </template>
         </b-table>
       </b-modal>
+
+<b-modal id="modal-config" title="Config" size="lg">
+  <b-overlay :show="updateConfigLoading">
+    <b-row>
+    <b-col cols="12">
+      <b-table responsive bordered small :items="list_indicator" :fields="fieldsIndicator_config">
+        <template #cell(type)="data">
+            <b-badge :variant="data.item.type === 'main' ? 'primary' : 'warning'">{{ data.item.type }}</b-badge>
+          </template>
+
+          <template #cell(isDefault)="data">
+          
+    <b-form-checkbox :checked="data.item.isDefault" @change="changeDefault(data.item)" >
+    </b-form-checkbox>
+
+          </template>
+      </b-table>
+      </b-col>
+  </b-row>
+  </b-overlay>
+  
+</b-modal>
     </b-row>
     </b-overlay>
     
@@ -203,136 +231,63 @@ import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,linear } f
 const listOverLay = [rect, rule,plan,anyWaves,triangle]
 const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
 import calc from '~/components/calc.vue'
-// var smcIndicator1 = {
-//   name: "SMC1",
-//   shortName: "SMC1",
-//   calcParams: [15, 2],
-//   figures: [{ key: "HH", title: "HL: ", type: "text" }],
-//   calc: (data, { calcParams }) => {
-//     let lookback = calcParams[0];
-//     let lastPivotHigh = null;
-//     let lastPivotLow = null;
-//     const pivots = { HH: [], HL: [], LL: [], LH: [] };
-
-//     for (let i = lookback; i < data.length - lookback; i++) {
-//       let isHH = true;
-//       let isLL = true;
-//       for (let j = 1; j <= lookback; j++) {
-//         if (
-//           data[i - j].high >= data[i].high ||
-//           data[i + j].high >= data[i].high
-//         ) {
-//           isHH = false;
-//         }
-//         if (data[i - j].low <= data[i].low || data[i + j].low <= data[i].low) {
-//           isLL = false;
-//         }
-//       }
-
-//       if (isHH) {
-//         pivots.HH.push({ index: i, value: data[i].high });
-//       }
-//       if (isLL) {
-//         pivots.LL.push({ index: i, value: data[i].low });
-//       }
-
-//       // HL and LH are determined by comparing to previous HH and LL
-//       if (i > 0) {
-//         if (
-//           data[i].low > data[i - 1].low &&
-//           data[i - 1].low < pivots.LL[pivots.LL.length - 1]?.value
-//         ) {
-//           pivots.HL.push({ index: i, value: data[i].low });
-//         }
-//         if (
-//           data[i].high < data[i - 1].high &&
-//           data[i - 1].high > pivots.HH[pivots.HH.length - 1]?.value
-//         ) {
-//           pivots.LH.push({ index: i, value: data[i].high });
-//         }
-//       }
-//     }
-
-//     const figures = [];
-//     console.log(pivots);
-
-//     pivots.HH.forEach((pivot) => {
-//       console.log(pivot);
-//       figures.push({
-//         HH: {
-//           value: [
-//             calculateXCoordinate(pivot.index, chartDimensions),
-//             calculateYCoordinate(pivot.value, chartDimensions),
-//           ],
-//         },
-//       });
-//     });
-//     return figures;
-//   },
-// };
-
-// var smcIndicator = {
-//   name: "SMC",
-//   shortName: "SMC",
-//   calcParams: [5], // default deviation for zigzag
-//   figures: [
-//     { key: "zigzag", title: "ZigZag", type: "line" },
-//     { key: "bos", title: "BOS", type: "line" },
-//     { key: "choch", title: "CHoCH", type: "line" },
-//   ],
-//   regenerateFigures: (params) => {
-//     return [
-//       { key: "zigzag", title: "ZigZag", type: "line" },
-//       { key: "bos", title: "BOS", type: "line" },
-//       { key: "choch", title: "CHoCH", type: "line" },
-//     ];
-//   },
-//   calc: (kLineDataList, { calcParams }) => {
-//     const deviation = calcParams[0];
-//     const zigzagValues = zigzag(kLineDataList, deviation);
-//     const bosLine = [];
-//     const chochLine = [];
-//     let previousType = null;
-
-//     for (let i = 1; i < zigzagValues.length; i++) {
-//       const currentZigzag = zigzagValues[i];
-//       const previousZigzag = zigzagValues[i - 1];
-
-//       // Check for BOS and CHoCH
-//       if (currentZigzag.deviation > 0 && previousZigzag.deviation < 0) {
-//         bosLine[i] = currentZigzag.value;
-//         previousType = "BOS";
-//       } else if (currentZigzag.deviation < 0 && previousZigzag.deviation > 0) {
-//         chochLine[i] = currentZigzag.value;
-//         previousType = "CHoCH";
-//       } else {
-//         if (previousType === "BOS") {
-//           bosLine[i] = (bosLine[i - 1] + currentZigzag.value) / 2;
-//         } else if (previousType === "CHoCH") {
-//           chochLine[i] = (chochLine[i - 1] + currentZigzag.value) / 2;
-//         }
-//       }
-//     }
-
-//     return kLineDataList.map((_, i) => {
-//       return {
-//         zigzag: zigzagValues[i]?.value || null,
-//         bos: bosLine[i],
-//         choch: chochLine[i],
-//       };
-//     });
-//   },
-// };
+import * as analyze from './analyze'
 
 let dbKey = "c0rbxvksqs9_oMTog1mCfFx79sSEyW1aDNA9Gf1GNeHT";
 let vantaKey='P1CHE11WCLZNLHC5'
 var binanceSocket;
+//sub indicato
+const drawT1 = {
+  name: "t1",
+  shortName: "t1",
+  calcParams: [],
+  figures: [
+    { key: 't', title: 't1: ', type: 'line',styles: () => {
+          return {
+            color: "green",
+          };
+        }, },
+  ],
+  calc: async (kLineDataList, { calcParams, figures }) => {
+    let close = kLineDataList.map(item=>item.t1)
+    
+    return kLineDataList. map((kLineData, i) => {
+      return {
+        t: close[i],
+      }
+    })
+}
+};
+
+const drawT2 = {
+  name: "t2",
+  shortName: "t2",
+  calcParams: [],
+  figures: [
+    { key: 't', title: 't2: ', type: 'line',styles: () => {
+          return {
+            color: "red",
+          };
+        }, },
+  ],
+  calc: async (kLineDataList, { calcParams, figures }) => {
+    let close = kLineDataList.map(item=>item.t2)
+    return kLineDataList. map((kLineData, i) => {
+      return {
+        t: close[i],
+      }
+    })
+}
+};
+
 export default {
+
   components:{
 calc
   },
   data() {
     return {
+      updateConfigLoading:false,
       isEditNote:false,
       keyNote:null,
       noteFields:[
@@ -369,6 +324,15 @@ calc
         { key: 'type' },
         { key: 'calcParams' },
       ],
+      fieldsIndicator_config: [
+        { key: 'value' },
+        { key: 'type' },
+        { key: 'calcParams' },
+        { key: 'isDefault' },
+
+        
+      ],
+      
       optionChart: {
         styles: {
           indicator: {
@@ -399,6 +363,41 @@ calc
     };
   },
   methods: {
+
+
+    changeDefault(item){
+      this.updateConfigLoading=true
+      let url = "https://database.deta.sh/v1/c0rbxvksqs9/list_indicator/items/"+item.key;
+      let body = {
+set:{
+  isDefault:!item.isDefault
+}
+      }
+      this.$axios.patch(url,body,{
+        headers:{
+          "Content-Type": "application/json",
+          "X-API-Key": dbKey
+        }
+      }).then(data=>{
+        this.updateConfigLoading=false
+        this.getNote();
+      })
+    },
+    async analyzeOHLCV(data) {
+        let result =await analyze.analyzeSymbol(data)
+console.log(result)
+let currentBot =result.currentPeriod.currentOhlcvArray
+let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
+       
+      this.initSubChart('chartCurrent',currentBot)
+      this.initSubChart('chartPre',preBot)
+      },
+   initSubChart(id,ohlcv){
+    let chart = klinecharts.init(id, this.optionChart);
+    chart.createIndicator( 't1', true, { id: 'candle_pane' })
+    chart.createIndicator( 't2', true, { id: 'candle_pane' })
+    chart.applyNewData(ohlcv);
+    },
     editNote(note){
       this.textNote=note.note
       this.isEditNote=true
@@ -613,6 +612,7 @@ calc
           this.$store.state.db.list_symbol_config[this.symbol];
 
         this.fetchData().then((data) => {
+          this.analyzeOHLCV(data)
           let chart = klinecharts.init("chart", this.optionChart);
 
           this.chart = chart;
@@ -622,6 +622,9 @@ calc
           listIndicator.forEach((i) => {
             klinecharts.registerIndicator(i);
           })
+          klinecharts.registerIndicator(drawT1)
+
+          klinecharts.registerIndicator(drawT2)
 
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision,optionFromExchange.pricePrecision );
           chart = chart;
