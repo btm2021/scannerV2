@@ -17,7 +17,121 @@ function findEMACrossover(ema1, ema2) {
 
     return crossoverIndexes;
 }
+function findSupportResistance(ohlcvData) {
+    let supports = [];
+    let resistances = [];
+    let tolerance = 0.02; // Độ lệch giá cho phép để xác định các mức, có thể điều chỉnh
 
+    for (let i = 1; i < ohlcvData.length - 1; i++) {
+        let prev = ohlcvData[i - 1];
+        let current = ohlcvData[i];
+        let next = ohlcvData[i + 1];
+
+        // Kiểm tra mức resistance
+        if (current.high > prev.high && current.high > next.high) {
+            let isResistance = true;
+            for (let res of resistances) {
+                if (current.high >= res * (1 - tolerance) && current.high <= res * (1 + tolerance)) {
+                    isResistance = false;
+                    break;
+                }
+            }
+            if (isResistance) {
+                resistances.push(current.high);
+            }
+        }
+
+        // Kiểm tra mức support
+        if (current.low < prev.low && current.low < next.low) {
+            let isSupport = true;
+            for (let sup of supports) {
+                if (current.low >= sup * (1 - tolerance) && current.low <= sup * (1 + tolerance)) {
+                    isSupport = false;
+                    break;
+                }
+            }
+            if (isSupport) {
+                supports.push(current.low);
+            }
+        }
+    }
+    ohlcvData.forEach(data => {
+        let nearestSupport = supports.find(sup => Math.abs(sup - data.low) / data.low < tolerance);
+        let nearestResistance = resistances.find(res => Math.abs(res - data.high) / data.high < tolerance);
+
+        data.support = nearestSupport || null;
+        data.resistance = nearestResistance || null;
+    });
+   
+    let result = findKeyLevels(ohlcvData, supports, resistances, 0.02);
+    
+    return { supports, resistances,ohlcvData:result };
+}
+
+function findKeyLevels(ohlcvData, supports, resistances, tolerance) {
+    let combinedLevels = supports.concat(resistances);
+    let levelCounts = {};
+
+    // Đếm số lần mỗi mức giá được chạm đến
+    combinedLevels.forEach(level => {
+        ohlcvData.forEach(data => {
+            if (Math.abs(level - data.low) / data.low < tolerance || Math.abs(level - data.high) / data.high < tolerance) {
+                levelCounts[level] = (levelCounts[level] || 0) + 1;
+            }
+        });
+    });
+
+    // Tìm keyLevel dựa trên số lần chạm đến nhiều nhất
+    let keyLevels = [];
+    Object.keys(levelCounts).forEach(level => {
+        if (levelCounts[level] > 1) { // Chỉ chọn mức giá được chạm đến nhiều hơn một lần
+            keyLevels.push(parseFloat(level));
+        }
+    });
+
+    // Thêm keyLevels vào mỗi đối tượng trong mảng ohlcvData
+    ohlcvData.forEach(data => {
+        let nearestKeyLevel = keyLevels.find(level => Math.abs(level - data.low) / data.low < tolerance || Math.abs(level - data.high) / data.high < tolerance);
+        data.keyLevel = nearestKeyLevel || null;
+    });
+
+    return ohlcvData;
+}
+
+
+
+function annotateSupportResistance(ohlcvData) {
+    let tolerance = 0.02; // Độ lệch giá cho phép để xác định các mức
+
+    // Tìm và gán các mức support và resistance
+    for (let i = 1; i < ohlcvData.length - 1; i++) {
+        let prev = ohlcvData[i - 1];
+        let current = ohlcvData[i];
+        let next = ohlcvData[i + 1];
+
+        // Xác định mức resistance
+        if (current.high > prev.high && current.high > next.high) {
+            let isNearExistingRes = ohlcvData.some(
+                data => Math.abs(data.resistance - current.high) / current.high < tolerance
+            );
+            if (!isNearExistingRes) {
+                current.resistance = current.high;
+            }
+        }
+
+        // Xác định mức support
+        if (current.low < prev.low && current.low < next.low) {
+            let isNearExistingSup = ohlcvData.some(
+                data => Math.abs(data.support - current.low) / current.low < tolerance
+            );
+            if (!isNearExistingSup) {
+                current.support = current.low;
+            }
+        }
+    }
+
+    return ohlcvData;
+}
 
 async function analyzeSymbol(ohlcv) {
     console.log('start')
@@ -25,7 +139,11 @@ async function analyzeSymbol(ohlcv) {
 
     let close = ohlcv.map(i => i.close)
     let myBot1 = await getMyBot(close, 34, 1.326, ohlcv)
-    return myBot1;
+    //
+    let resistantAndSupport = findSupportResistance(ohlcv)
+    let a = annotateSupportResistance(ohlcv)
+    
+    return {bot:myBot1,supres:resistantAndSupport,};
 
 }
 
@@ -36,7 +154,7 @@ async function getMyBot(data, period, multi, rawOHLCV) {
 
     //let ema14 = EMA.calculate({ period, values: data })
     let ema14 = await ta.ema(data, period)
-   // ema14 = await ta.linreg(data,period)
+    // ema14 = await ta.linreg(data,period)
     let t2 = Array(ema14.length)
 
     // let t2=[]
@@ -57,8 +175,8 @@ async function getMyBot(data, period, multi, rawOHLCV) {
             start: rawOHLCV[crossPeriod[i] - 1],
             dateStart: new Date(rawOHLCV[crossPeriod[i] - 1].timestamp),
             end: rawOHLCV[crossPeriod[i + 1] - 1],
-            t1:[],
-            t2:[],
+            t1: [],
+            t2: [],
             endDay: new Date(rawOHLCV[crossPeriod[i + 1] - 1].timestamp),
             trend: t1[crossPeriod[i]] > t2[crossPeriod[i]] ? "LONG" : "SHORT",
             ohlcvArray: [],
@@ -66,8 +184,8 @@ async function getMyBot(data, period, multi, rawOHLCV) {
         }
         for (let j = crossPeriod[i]; j < crossPeriod[i + 1]; j++) {
             let ohlcv = rawOHLCV[j]
-            ohlcv.t1=t1[j]
-            ohlcv.t2=t2[j]
+            ohlcv.t1 = t1[j]
+            ohlcv.t2 = t2[j]
             objectPeriod.t1.push(t1[j])
             objectPeriod.t2.push(t2[j])
             objectPeriod.ohlcvArray.push(rawOHLCV[j])
@@ -78,20 +196,20 @@ async function getMyBot(data, period, multi, rawOHLCV) {
 
     let currentOhlcvArray = []
     let currentCountBar = 0
-    let currentT1=[]
-    let currentT2=[]
+    let currentT1 = []
+    let currentT2 = []
     for (let i = crossPeriod[crossPeriod.length - 1] + 1; i < rawOHLCV.length; i++) {
-        let ohlcv =rawOHLCV[i]
-        ohlcv.t1= t1[i]
-        ohlcv.t2=t2[i]
+        let ohlcv = rawOHLCV[i]
+        ohlcv.t1 = t1[i]
+        ohlcv.t2 = t2[i]
         currentOhlcvArray.push(ohlcv)
         currentT1.push(t1[i])
         currentT2.push(t2[i])
         currentCountBar++;
     }
     let currentPeriod = {
-        t1:currentT1,
-        t2:currentT2,
+        t1: currentT1,
+        t2: currentT2,
         start: rawOHLCV[crossPeriod[crossPeriod.length - 1]],
         dateStart: new Date(rawOHLCV[crossPeriod[crossPeriod.length - 1]].timestamp),
         end: rawOHLCV[rawOHLCV.length - 1],

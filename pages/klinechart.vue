@@ -237,6 +237,33 @@ let dbKey = "c0rbxvksqs9_oMTog1mCfFx79sSEyW1aDNA9Gf1GNeHT";
 let vantaKey='P1CHE11WCLZNLHC5'
 var binanceSocket;
 //sub indicato
+const drawSupres = {
+  name: "mySupRes1",
+  shortName: "mySupRes1",
+  calcParams: [],
+  figures: [
+    {key:'sup',title:'sup',type:'circle'},
+    {key:'res',title:'res',type:'circle'},
+    {key:'keyLevel',title:'res',type:'circle',
+    styles: () => {
+      return {
+        color:'white'
+      }
+    }
+  }
+  ],
+  calc: async (kLineDataList, { calcParams, figures }) => {
+   
+    return kLineDataList. map((kLineData, i) => {
+      return {
+        //sup:kLineData.support,
+       //res:kLineData.resistance,
+        keyLevel:kLineData.keyLevel
+      }
+    })
+}
+};
+
 const drawT1 = {
   name: "t1",
   shortName: "t1",
@@ -385,12 +412,17 @@ set:{
     },
     async analyzeOHLCV(data) {
         let result =await analyze.analyzeSymbol(data)
-console.log(result)
+        let _result = JSON.parse(JSON.stringify(result))
+       
+        result=result.bot
+      
 let currentBot =result.currentPeriod.currentOhlcvArray
 let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
        
       this.initSubChart('chartCurrent',currentBot)
       this.initSubChart('chartPre',preBot)
+      
+      return _result.supres.ohlcvData
       },
    initSubChart(id,ohlcv){
     let chart = klinecharts.init(id, this.optionChart);
@@ -612,7 +644,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
           this.$store.state.db.list_symbol_config[this.symbol];
 
         this.fetchData().then((data) => {
-          this.analyzeOHLCV(data)
+        
           let chart = klinecharts.init("chart", this.optionChart);
 
           this.chart = chart;
@@ -625,13 +657,17 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
           klinecharts.registerIndicator(drawT1)
 
           klinecharts.registerIndicator(drawT2)
-
+          klinecharts.registerIndicator(drawSupres)
+     
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision,optionFromExchange.pricePrecision );
           chart = chart;
           window.addEventListener("resize", () => {
             this.chart.resize();
           });
-          chart.applyNewData(data);
+          this.analyzeOHLCV(data).then(data=>{
+            chart.createIndicator('mySupRes1', true, { id: 'candle_pane' })
+            chart.applyNewData(data);
+          })
           //gọi stream
           let binanceStreamURL = `wss://fstream.binance.com/ws/${this.symbol.toLowerCase()}@kline_${this.timeframe
             }`;
@@ -643,9 +679,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
           binanceSocket.onclose = (event) => {
             console.log(`Unscribed to ${this.symbol} - ${this.timeframe}`);
           };
-
           //orderbook
-
           binanceSocket.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
