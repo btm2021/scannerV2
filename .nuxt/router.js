@@ -5,13 +5,12 @@ import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
 const _10bad6b2 = () => interopDefault(import('..\\pages\\a.vue' /* webpackChunkName: "pages/a" */))
+const _0064fbbd = () => interopDefault(import('..\\pages\\analyze.js' /* webpackChunkName: "pages/analyze" */))
 const _4840c2b8 = () => interopDefault(import('..\\pages\\chart.vue' /* webpackChunkName: "pages/chart" */))
 const _624506ca = () => interopDefault(import('..\\pages\\index2.vue' /* webpackChunkName: "pages/index2" */))
 const _43ea38cc = () => interopDefault(import('..\\pages\\indicator.js' /* webpackChunkName: "pages/indicator" */))
 const _6860a073 = () => interopDefault(import('..\\pages\\indicator\\all.js' /* webpackChunkName: "pages/indicator/all" */))
-const _8bdd85e6 = () => interopDefault(import('..\\pages\\indicator\\ta.js' /* webpackChunkName: "pages/indicator/ta" */))
 const _638965ee = () => interopDefault(import('..\\pages\\klinechart.vue' /* webpackChunkName: "pages/klinechart" */))
-const _5dd3c3dc = () => interopDefault(import('..\\pages\\klinechart copy.vue' /* webpackChunkName: "pages/klinechart copy" */))
 const _2bfa6d98 = () => interopDefault(import('..\\pages\\overlay\\all.js' /* webpackChunkName: "pages/overlay/all" */))
 const _4d7d5598 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
@@ -31,6 +30,10 @@ export const routerOptions = {
     component: _10bad6b2,
     name: "a"
   }, {
+    path: "/analyze",
+    component: _0064fbbd,
+    name: "analyze"
+  }, {
     path: "/chart",
     component: _4840c2b8,
     name: "chart"
@@ -46,19 +49,11 @@ export const routerOptions = {
       path: "all",
       component: _6860a073,
       name: "indicator-all"
-    }, {
-      path: "ta",
-      component: _8bdd85e6,
-      name: "indicator-ta"
     }]
   }, {
     path: "/klinechart",
     component: _638965ee,
     name: "klinechart"
-  }, {
-    path: "/klinechart%20copy",
-    component: _5dd3c3dc,
-    name: "klinechart copy"
   }, {
     path: "/overlay/all",
     component: _2bfa6d98,

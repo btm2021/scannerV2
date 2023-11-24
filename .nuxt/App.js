@@ -4,6 +4,7 @@ import { decode, parsePath, withoutBase, withoutTrailingSlash, normalizeURL } fr
 import { getMatchedComponentsInstances, getChildrenComponentInstancesUsingFetch, promisify, globalHandleError, urlJoin, sanitizeComponent } from './utils'
 import NuxtError from './components/nuxt-error.vue'
 import NuxtLoading from './components/nuxt-loading.vue'
+import NuxtBuildIndicator from './components/nuxt-build-indicator'
 
 import '..\\node_modules\\bootstrap\\dist\\css\\bootstrap.css'
 
@@ -47,7 +48,7 @@ export default {
       }
     }, [
       loadingEl,
-
+      h(NuxtBuildIndicator),
       transitionEl
     ])
   },

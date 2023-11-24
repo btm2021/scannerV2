@@ -263,9 +263,7 @@ const myBot34 = {
       prevEMAs[0] = currentEma;
     });
     //lig
-    emaResults = await ta.linreg(closePrices, calcParams[0])
-
-    emaResults = await ta.lag(closePrices, calcParams[0])
+  emaResults = await ta.linreg(closePrices, calcParams[0])
     
     // Calculate Trail2 based on the first EMA
     const t2Results = Array(emaResults.length).fill(0);

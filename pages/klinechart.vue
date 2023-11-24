@@ -566,7 +566,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
     },
     async fetchData() {
       return new Promise((resolve, reject) => {
-        let url = `https://fapi.binance.com/fapi/v1/klines?symbol=${this.symbol}&interval=${this.timeframe}&limit=1000`;
+        let url = `https://fapi.binance.com/fapi/v1/klines?symbol=${this.symbol}&interval=${this.timeframe}&limit=1500`;
         this.$axios.get(url).then((data) => {
           resolve(this.formatData(data.data));
         });
