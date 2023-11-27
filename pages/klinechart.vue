@@ -14,7 +14,7 @@
       </template>
       <b-row class="no-gutters">
       <b-col sm="12" lg="12">
-        <div id="chart" style="width: 100%; height: 600px; background-color:#171b26;"></div>
+        <div id="chart" style="width: 100ww; height: 100vh; background-color:#171b26;"></div>
       </b-col>
       <b-col sm="12" lg="3">
         <b-row class="no-gutters">
