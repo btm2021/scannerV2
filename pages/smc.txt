@@ -1,0 +1,652 @@
+// This work is licensed under a Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) https://creativecommons.org/licenses/by-nc-sa/4.0/
+// © HunterAlgos
+
+//@version=5
+indicator("SMC", shorttitle = "SMC",overlay = true, max_lines_count = 500, max_labels_count = 500, max_boxes_count = 500, max_bars_back = 500)
+
+lookback = input.int(12,"Pivot Point Length",minval = 2,group = "Inputs")
+liq_valid = input.int(7,"Liquidation Validity",minval = 1,tooltip = "Measure how many candles should max pass to count as liquidity. Ex: if set to 7, the liquidation should happen in those 7 bars; otherwise, it is not valid.",inline = "AA",group = "Inputs")
+liq_bool = input.bool(true,"Use Pivot Length",inline = "AA",group = "Inputs")
+
+
+switch liq_bool
+    true => liq_valid := lookback
+    false => na
+    => liq_valid
+
+HH_css = input.color(color.white, "HH & HL", inline = "HHLL2", group = "Inputs")
+LL_css = input.color(color.gray , "LL & LH", inline = "HHLL2", group = "Inputs")
+
+css_candle = input.string("CHoCH", "Candle Coloring",options = ["CHoCH","Default"])
+
+// bt_show = input.bool(false,"Show feedbacks result",group = "Settings")
+show_liq = input.bool(false,"Hide Liquidity Swipe",group = "Settings")
+show_pivot = input.bool(false,"Hide Pivot Point",group = "Settings")
+show_wick = input.bool(false,"Hide Liquidation Wicks Point",group = "Settings")
+
+css_bull = input.color(#089981  , "Bull CHoCH", inline = "Color 1", group = "Colors trend")
+css_bear = input.color(color.red, "Bear CHoCH", inline = "Color 1", group = "Colors trend")
+
+css_up = input.color(color.gray,  "Up Candle", inline = "Color 2", group = "Colors trend")
+css_dn = input.color(color.black, "Down Candle", inline = "Color 2", group = "Colors trend")
+
+
+major_trans = input.int(80,"Transp Major Liquidation",0,100,inline = "trans1",group = "Liquidations Color")
+minor_trans = input.int(90,"Transp Minor Liquidation",0,100,inline = "trans2",group = "Liquidations Color")
+
+liq_bear_minor = input.color(color.gray,"Bearish Liquidity Minor Swipe", group = "Liquidations Color")
+liq_bull_minor = input.color(color.gray,"Bullish Liquidity Minor Swipe", group = "Liquidations Color")
+
+liq_bear_major = input.color(color.purple,"Bearish Liquidity Major Swipe", group = "Liquidations Color")
+liq_bull_major = input.color(color.aqua,"Bullish Liquidity Major Swipe", group = "Liquidations Color")
+
+liq_wick_lh = input.color(color.orange, "Bearish Liquidation wick", group = "Liquidations Color")
+liq_wick_hl = input.color(color.aqua, "Bullish Liquidation wick", group = "Liquidations Color")
+
+lbl_size = input.int(1,"Pivot Text size",1,maxval = 5, group = "Text size")
+lbl_t = switch lbl_size
+    1 => size.tiny
+    2 => size.small
+    3 => size.normal
+    4 => size.large
+    5 => size.huge
+    
+
+txt_size = input.int(1,"Market structure Text size",1,maxval = 5, group = "Text size")
+txt_t = switch txt_size
+    1 => size.tiny
+    2 => size.small
+    3 => size.normal
+    4 => size.large
+    5 => size.huge
+
+
+transline = 0
+
+BOS_bull_css = input.color(color.white, "Bullish BOS", inline = "BOS1", group = "BOS and CHoCH colors")
+BOS_bear_css = input.color(color.gray , "Bullish BOS", inline = "BOS2", group = "BOS and CHoCH colors")
+
+CHOCH_bull_css = input.color(color.white, "Bullish CHoCH", inline = "BOS1", group = "BOS and CHoCH colors")
+CHOCH_bear_css = input.color(color.gray , "Bearish CHoCH", inline = "BOS2", group = "BOS and CHoCH colors")
+
+
+
+switch show_liq
+    true => major_trans := 100, minor_trans := 100
+    false => na
+
+
+colinv = color.new(color.white,100) // gay
+
+type bar
+    float o = open
+    float h = high
+    float l = low
+    float c = close
+    float v = volume
+    int idx = bar_index
+    int t = time
+
+// type col
+//     color gray = color.gray
+//     color black = color.black
+//     color green = color.green
+//     color red = color.red
+//     color blue = color.blue
+//     color purple = color.purple
+//     color ared = #e60000
+//     color ablue = #3366ff
+//     color inv = #ffffff00
+
+type zBin
+    float[] LH
+    float[] HL
+    float[] LL
+    float[] HH
+
+    int[] LHindex
+    int[] HLindex
+    int[] LLindex
+    int[] HHindex
+
+
+    float[] LHchoch
+    float[] HLchoch
+    float[] LLchoch
+    float[] HHchoch 
+
+    int[] LHchochIndex
+    int[] HLchochIndex
+    int[] LLchochIndex
+    int[] HHchochIndex
+
+    float[] _popLH 
+    int[] _popLHidx
+
+
+
+var bin = zBin.new(
+
+   array.new<float>()
+ , array.new<float>()
+ , array.new<float>()
+ , array.new<float>()
+
+ , array.new<int>()
+ , array.new<int>()
+ , array.new<int>()
+ , array.new<int>()
+
+
+ , array.new<float>()
+ , array.new<float>()
+ , array.new<float>()
+ , array.new<float>()
+
+ , array.new<int>()
+ , array.new<int>()
+ , array.new<int>()
+ , array.new<int>()
+
+ , array.new<float>()
+ , array.new<int>()
+
+ )
+
+
+bar = bar.new()
+// col = col.new()
+var int itrend = 0
+
+f_drawLine(x1, y1, x2, y2, color, widh, bBar, txt, down, dashed,transline) =>
+    var line id = na
+
+    id := line.new(na, na, na, na, xloc = xloc.bar_index, style = dashed ? line.style_dashed : line.style_solid)
+    line.set_x1(id ,x1)
+    line.set_y1(id ,y1)
+    line.set_x2(id ,x2)
+    line.set_y2(id ,y2)
+
+    line.set_color(id, color.new(color,transline))
+    line.set_width(id, widh)
+
+    structure_lbl = label.new(int(math.avg(x1, bBar)), y1, txt
+      , color = colinv
+      , textcolor = color
+      , style = down ? label.style_label_down : label.style_label_up
+      , size = txt_t)   
+
+f_drawBox(left, top, right, bottom, bgcolor, bcolor, trans) =>
+    var box id = na
+    id := box.new(left, top, right, bottom)
+    box.set_bgcolor(id,color.new(bgcolor,trans))
+    box.set_border_width(id, 1)
+    box.set_border_color(id, color.new(bcolor,100))
+
+
+
+// && => HH LL LH
+
+ph = ta.pivothigh(lookback, lookback)
+pl = ta.pivotlow(lookback, lookback)
+
+iff_1 = pl ? -1 : na  // Trend direction
+hl = ph ? 1 : iff_1
+iff_2 = pl ? pl : na  // similar to zigzag but may have multiple highs/lows
+zz = ph ? ph : iff_2
+valuewhen_1 = ta.valuewhen(hl, hl, 1)
+valuewhen_2 = ta.valuewhen(zz, zz, 1)
+zz := pl and hl == -1 and valuewhen_1 == -1 and pl > valuewhen_2 ? na : zz
+valuewhen_3 = ta.valuewhen(hl, hl, 1)
+valuewhen_4 = ta.valuewhen(zz, zz, 1)
+zz := ph and hl == 1 and valuewhen_3 == 1 and ph < valuewhen_4 ? na : zz
+
+valuewhen_5 = ta.valuewhen(hl, hl, 1)
+valuewhen_6 = ta.valuewhen(zz, zz, 1)
+hl := hl == -1 and valuewhen_5 == 1 and zz > valuewhen_6 ? na : hl
+valuewhen_7 = ta.valuewhen(hl, hl, 1)
+valuewhen_8 = ta.valuewhen(zz, zz, 1)
+hl := hl == 1 and valuewhen_7 == -1 and zz < valuewhen_8 ? na : hl
+zz := na(hl) ? na : zz
+
+findprevious() =>  // finds previous three points (b, c, d, e)
+    ehl = hl == 1 ? -1 : 1
+    loc1 = 0.0
+    loc2 = 0.0
+    loc3 = 0.0
+    loc4 = 0.0
+    xx = 0
+    for x = 1 to 1000 by 1
+        if hl[x] == ehl and not na(zz[x])
+            loc1 := zz[x]
+            xx := x + 1
+            break
+    ehl := hl
+    for x = xx to 1000 by 1
+        if hl[x] == ehl and not na(zz[x])
+            loc2 := zz[x]
+            xx := x + 1
+            break
+    ehl := hl == 1 ? -1 : 1
+    for x = xx to 1000 by 1
+        if hl[x] == ehl and not na(zz[x])
+            loc3 := zz[x]
+            xx := x + 1
+            break
+    ehl := hl
+    for x = xx to 1000 by 1
+        if hl[x] == ehl and not na(zz[x])
+            loc4 := zz[x]
+            break
+    [loc1, loc2, loc3, loc4]
+
+
+
+isNot() =>
+    float a = na
+    float b = na
+    float c = na
+    float d = na
+    float e = na
+
+    if not na(hl)
+        [loc1, loc2, loc3, loc4] = findprevious()
+        a := zz
+        b := loc1
+        c := loc2
+        d := loc3
+        e := loc4
+        e
+
+    _hh = zz and a > b and a > c and c > b and c > d
+    _ll = zz and a < b and a < c and c < b and c < d
+    _hl = zz and (a >= c and b > c and b > d and d > c and d > e or a < b and a > c and b < d)
+    _lh = zz and (a <= c and b < c and b < d and d < c and d < e or a > b and a < c and b > d)
+
+    [_hh, _ll, _hl, _lh]
+
+[_hh, _ll, _hl, _lh] = isNot()
+
+
+
+float res = na
+float sup = na
+res := _lh ? zz : res[1]
+sup := _hl ? zz : sup[1]
+
+int trend = na
+iff_3 = close < sup ? -1 : nz(trend[1])
+trend := close > res ? 1 : iff_3
+
+res := trend == 1 and _hh or trend == -1 and _lh ? zz : res
+sup := trend == 1 and _hl or trend == -1 and _ll ? zz : sup
+rechange = res != res[1]
+suchange = sup != sup[1]
+
+//table int
+
+var int tot_structure_bull = 0
+var int tot_structure_bear = 0
+
+var float tot_bear_liq = 0
+var float tot_bull_liq = 0
+
+var float tot_liq_sell = 0
+var float tot_liq_buy = 0
+
+// && => Pivot HH and CHoCH
+
+var bxHHchOchPoint = array.new<float>()
+color onetap = na
+float src_onetap_lh = na
+float src_onetap_hl = na
+
+
+bodyLength = math.abs(close - open)
+downWickLength = low - math.min(open, close)
+downWickBigger = downWickLength > bodyLength
+
+
+if _hh
+    id = show_pivot ? na : label.new(bar.idx[lookback], bar.h[lookback], text = "HH", text_font_family = font.family_monospace, style = label.style_label_down, size = lbl_t, color = colinv, textcolor = HH_css)
+    bin.HH.push(bar.h[lookback])
+    bin.HHindex.push(bar.idx[lookback])
+
+    bxHHchOchPoint.push(bar.h[1])
+
+if bin.HH.size() > 0
+    if bar.idx % (lookback * 2) == 0
+        bin.HHchoch.push(bin.HH.pop())
+        bin.HHchochIndex.push(bin.HHindex.pop())
+
+
+if bin.HH.size() > 0
+    for j = 0 to bin.HH.size()
+        if bin.HH.size() <= 0
+            break
+        else
+            var _popHH = array.new<float>()
+            var _popHHidx = array.new<int>()
+            var int barsince = ta.barssince(ta.crossunder(bar.c, bin.HH.last()))
+            if ta.crossover(bar.h, bin.HH.last())
+                bool choch = false
+
+                if itrend < 0
+                    choch := true
+                txt = choch ? "CHoCH" : "BOS"
+                _popHH.push(bin.HH.pop())
+                _popHHidx.push(bin.HHindex.pop())
+                if math.abs(_popHHidx.last() - bar.idx) > 500
+                    break
+                else
+                    col = choch ? CHOCH_bull_css : BOS_bull_css
+                    itrend := 1
+                    tot_structure_bull += 1
+                    
+                    f_drawLine(_popHHidx.last(), _popHH.last(), bar.idx, _popHH.last(), col, 1, bar.idx, txt, true, txt == "BOS" ? true : false, transline)
+
+
+if bin.HHchoch.size() > 0
+    for j = 0 to bin.HHchoch.size()
+        if bin.HHchoch.size() <= 0
+            break
+        else
+            var _popHHchoch = array.new<float>()
+            var _popHHchochIndex = array.new<int>()
+            if ta.crossover(bar.c, bin.HHchoch.last())
+                bool choch = false
+
+                if itrend < 0
+                    choch := true
+                txt = choch ? "CHoCH" : "BOS"
+
+                _popHHchoch.push(bin.HHchoch.pop())
+                _popHHchochIndex.push(bin.HHchochIndex.pop())
+                if math.abs(_popHHchochIndex.last() - bar.idx) > 500
+                    break
+                else
+                    col = choch ? CHOCH_bull_css : BOS_bull_css
+                    f_drawLine(_popHHchochIndex.last(), _popHHchoch.last(), bar.idx, _popHHchoch.last(), col, 1, bar.idx, txt, true, txt == "BOS" ? true : false, transline)
+                    itrend := 1
+                    tot_structure_bull += 1
+
+
+if bxHHchOchPoint.size() > 0
+    barsince = ta.barssince(ta.crossover(bar.h ,bxHHchOchPoint.last()))
+    var float lastLvl = na
+    var int index = na
+    if ta.crossover(bar.h, bxHHchOchPoint.last())
+        lastLvl := bxHHchOchPoint.last()
+        index := bar.idx[1]
+
+    if ta.crossunder(bar.h, bxHHchOchPoint.last()) and barsince <= liq_valid
+        var maxtop = array.new<float>()
+        for j = 0 to barsince
+            maxtop.push(bar.h[j])
+
+        f_drawBox(index, maxtop.max(), bar.idx, lastLvl, liq_bear_major, liq_bear_major, major_trans)
+        tot_liq_sell += ta.cum(volume)
+        lastLvl := na
+        index := na
+        maxtop.clear()
+    else if ta.crossunder(bar.h, bxHHchOchPoint.last()) and barsince > liq_valid
+        lastLvl := na
+        index := na
+
+
+// && => Pivot LL and CHoCH
+
+var bxLLchOch = array.new<float>()
+
+if _ll
+    id = show_pivot ? na : label.new(bar.idx[lookback], bar.l[lookback], text = "LL", text_font_family = font.family_monospace, style = label.style_label_up, size = lbl_t, color = colinv, textcolor = LL_css)
+    bin.LL.push(bar.l[lookback])
+    bin.LLindex.push(bar.idx[lookback])
+
+    bxLLchOch.push(bar.l[1])
+
+if bin.LL.size() > 0            
+    if bar.idx % (lookback * 2) == 0
+        bin.LLchoch.push(bin.LL.pop())
+        bin.LLchochIndex.push(bin.LLindex.pop())
+
+
+if bin.LL.size() > 0
+    for j = 0 to bin.LL.size()
+        if bin.LL.size() <= 0
+            break
+        else
+            var _popLL = array.new<float>()
+            var _popLLidx = array.new<int>()
+            var int barsince = ta.barssince(ta.crossunder(bar.c, bin.LL.last()))
+            if ta.crossunder(bar.l, bin.LL.last())
+                bool choch = false
+
+                if itrend > 0
+                    choch := true
+                txt = choch ? "CHoCH" : "BOS"
+
+                _popLL.push(bin.LL.pop())
+                _popLLidx.push(bin.LLindex.pop())
+                if math.abs(_popLLidx.last() - bar.idx) > 500
+                    break
+                else
+                    col = choch ? CHOCH_bear_css : BOS_bear_css
+                    f_drawLine(_popLLidx.last(), _popLL.last(), bar.idx, _popLL.last(), col, 1, bar.idx, txt, false, txt == "BOS" ? true : false, transline)
+                    itrend := -1
+                    tot_structure_bear += 1
+
+
+if bin.LLchoch.size() > 0
+    for j = 0 to bin.LLchoch.size()
+        if bin.LLchoch.size() <= 0
+            break
+        else
+            var _popLLchoch = array.new<float>()
+            var _popLLchochIndex = array.new<int>()
+            if ta.crossunder(bar.c, bin.LLchoch.last())
+                bool choch = false
+
+                if itrend > 0
+                    choch := true
+                txt = choch ? "CHoCH" : "BOS"
+
+                _popLLchoch.push(bin.LLchoch.pop())
+                _popLLchochIndex.push(bin.LLchochIndex.pop())
+                if math.abs(_popLLchochIndex.last() - bar.idx) > 500
+                    break
+                else
+                    col = choch ? CHOCH_bear_css : BOS_bear_css
+                    f_drawLine(_popLLchochIndex.last(), _popLLchoch.last(), bar.idx, _popLLchoch.last(), col, 1, bar.idx, txt, false, txt == "BOS" ? true : false, transline)
+                    itrend := -1
+                    tot_structure_bear += 1
+
+
+
+if bxLLchOch.size() > 0
+    barsince = ta.barssince(ta.crossunder(bar.l ,bxLLchOch.last()))
+    var float lastLvl = na
+    var int index = na
+    if ta.crossunder(bar.h, bxLLchOch.last())
+        lastLvl := bxLLchOch.last()
+        index := bar.idx[1]
+
+    if ta.crossover(bar.h, bxLLchOch.last()) and barsince <= liq_valid
+        var maxtop = array.new<float>()
+        for j = 0 to barsince
+            maxtop.push(bar.l[j])
+
+        f_drawBox(index, lastLvl, bar.idx[1], maxtop.min(), liq_bull_major, liq_bull_major, major_trans)
+        tot_liq_buy += ta.cum(volume)
+        lastLvl := na
+        index := na
+        maxtop.clear()
+    else if ta.crossover(bar.l, bxLLchOch.last()) and barsince > liq_valid
+        lastLvl := na
+        index := na
+
+
+
+// && => Pivot HL
+
+var bxHLPoint = array.new<float>()
+
+if _hl
+    id = show_pivot ? na : label.new(bar.idx[lookback], bar.l[lookback], text = "HL", text_font_family = font.family_monospace, style = label.style_label_up, size = lbl_t, color = colinv, textcolor = HH_css)
+    bin.HL.push(bar.l[lookback])
+    bin.HLindex.push(bar.idx[lookback])
+
+    bxHLPoint.push(bar.l[lookback])
+
+
+if bin.HL.size() > 0
+    for j = 0 to bin.HL.size()
+        if bin.HL.size() <= 0
+            break
+        else
+            if bin.HL.size() > 0
+                var _popHL = array.new<float>()
+                var _popHLidx = array.new<int>()
+                var int barsince = ta.barssince(ta.crossunder(bar.c, bin.HL.last()))
+                if ta.crossunder(bar.l, bin.HL.last())
+                    _popHL.push(bin.HL.pop())
+                    _popHLidx.push(bin.HLindex.pop())
+                    if math.abs(_popHLidx.last() - bar.idx) > 500
+                        break
+                    else
+                        show_pivot ? na : f_drawLine(_popHLidx.last(), _popHL.last(), bar.idx, _popHL.last(), HH_css, 1, bar.idx, "", false, false, 0)
+
+                    if bar.c > _popHL.last() and bar.o > _popHL.last() and math.abs(close - open) <= math.abs(low - (close > open ? open : close))
+                        src_onetap_hl := low
+
+
+
+if bxHLPoint.size() > 0
+    barsince = ta.barssince(ta.crossunder(bar.l ,bxHLPoint.last()))
+    var float lastLvl = na
+    var int index = na
+    if ta.crossunder(bar.h, bxHLPoint.last())
+        lastLvl := bxHLPoint.last()
+        index := bar.idx[1]
+
+    if ta.crossover(bar.h, bxHLPoint.last()) and barsince <= liq_valid
+        var maxtop = array.new<float>()
+        for j = 0 to barsince
+            maxtop.push(bar.l[j])
+
+        f_drawBox(index, lastLvl, bar.idx[1], maxtop.min(), liq_bear_minor, liq_bear_minor, minor_trans)
+        tot_liq_buy += ta.cum(volume)
+        lastLvl := na
+        index := na
+        maxtop.clear()
+    else if ta.crossover(bar.l, bxHLPoint.last()) and barsince > liq_valid
+        lastLvl := na
+        index := na
+
+
+// && => Pivot LH and Liquidity Swap
+
+
+var bxLHPoint = array.new<float>()
+
+if _lh
+    id = show_pivot ? na : label.new(bar.idx[lookback], bar.h[lookback], text = "LH", text_font_family = font.family_monospace, style = label.style_label_down, size = lbl_t, color = colinv, textcolor = LL_css)
+    bin.LH.push(bar.h[lookback])
+    bin.LHindex.push(bar.idx[lookback])
+
+    bxLHPoint.push(bar.h[lookback])
+
+
+
+if bin.LH.size() > 0
+    for j = 0 to bin.LH.size()
+        if bin.LH.size() <= 0
+            break
+        else
+            if ta.crossover(bar.h, bin.LH.last())
+                bin._popLH.push(bin.LH.pop())
+                bin._popLHidx.push(bin.LHindex.pop())
+                if math.abs(bin._popLHidx.last() - bar.idx) > 500
+                    break
+                else
+                    show_pivot ? na : f_drawLine(bin._popLHidx.last(), bin._popLH.last(), bar.idx, bin._popLH.last(), LL_css, 1, bar.idx, "", false, false, 0)
+
+                if bar.c < bin._popLH.last() and bar.o < bin._popLH.last() and math.abs(close - open) <= math.abs(high - (close > open ? close : open))
+                    src_onetap_lh := high
+                        
+
+if bxLHPoint.size() > 0
+    barsince = ta.barssince(ta.crossover(bar.h ,bxLHPoint.last()))
+    var float lastLvl = na
+    var int index = na
+    if ta.crossover(bar.h, bxLHPoint.last())
+        lastLvl := bxLHPoint.last()
+        index := bar.idx[1]
+
+    if ta.crossunder(bar.h, bxLHPoint.last()) and barsince <= liq_valid
+        var maxtop = array.new<float>()
+        for j = 0 to barsince
+            maxtop.push(bar.h[j])
+
+        f_drawBox(index, maxtop.max(), bar.idx[1], lastLvl, liq_bull_minor, liq_bull_minor, minor_trans)
+        tot_liq_sell += ta.cum(volume)
+        lastLvl := na
+        index := na
+        maxtop.clear()
+    else if ta.crossunder(bar.h, bxLHPoint.last()) and barsince > liq_valid
+        lastLvl := na
+        index := na
+
+
+
+
+
+
+css(x) =>
+    var color col = na
+    if x == "CHoCH"
+        col := itrend == 1 ? css_bull : css_bear
+    else if x == "Default"
+        col := bar.c > bar.o ? css_up : css_dn
+    col
+
+css = css(css_candle)
+c_src = close > open ? close : open
+c_csrc = close > open ? open : close
+
+int b_wick = 0
+
+switch show_wick
+    false => na
+    true => b_wick := 100
+
+plotcandle(bar.o ,bar.h, bar.l, bar.c, color = css, wickcolor = css, bordercolor = css,display = display.pane)
+plotcandle(src_onetap_lh,c_src, c_src ,c_src, color = colinv,wickcolor = colinv,bordercolor = color.new(liq_wick_lh,b_wick),display = display.pane)
+plotcandle(src_onetap_hl,c_csrc, c_csrc ,c_csrc, color = colinv,wickcolor = colinv,bordercolor = color.new(liq_wick_hl,b_wick),display = display.pane)
+
+
+//src_onetap
+
+
+// // && =>
+
+
+
+import TradingView/ZigZag/7 as ZigZagLib 
+
+// Create Zig Zag instance from user settings.
+var zigZag = ZigZagLib.newInstance(
+  ZigZagLib.Settings.new(
+      input.float(5.0, "Price deviation for reversals (%)", 0.00001, 100.0, 0.5, "0.00001 - 100"),
+      input.int(10, "Pivot legs", 2),
+      input(#2962FF, "Line color"),
+      input(true, "Extend to last bar"),
+      input(true, "Display reversal price"),
+      input(true, "Display cumulative volume"),
+      input(true, "Display reversal price change", inline = "priceRev"),
+      input.string("Absolute", "", ["Absolute", "Percent"], inline = "priceRev"),
+      true)
+ )
+
+// Update 'zigZag' object on each bar with new ​pivots, ​volume, lines, labels.
+zigZag.update()

@@ -13,7 +13,7 @@
         </div>
       </template>
       <b-row class="no-gutters">
-      <b-col sm="12" lg="9">
+      <b-col sm="12" lg="12">
         <div id="chart" style="width: 100%; height: 600px; background-color:#171b26;"></div>
       </b-col>
       <b-col sm="12" lg="3">
@@ -140,11 +140,11 @@
         <b-col cols="8">
           <b-card>
           <div id="subChart">
-            <h6>Chu kì hiện tại</h6>
+            <!-- <h6>Chu kì hiện tại</h6>
             <div id="chartCurrent" style="width: 100%; height: 600px; background-color:#171b26;"></div>
             <h6>Chu kì trước đó</h6>
             <div id="chartPre" style="width: 100%; height: 600px; background-color:#171b26;"></div>
-   
+    -->
           </div>
           </b-card>
         </b-col>
@@ -242,6 +242,11 @@ const drawSupres = {
   shortName: "mySupRes1",
   calcParams: [],
   figures: [
+  {key:'k1',title:'res1',type:'circle',},
+  {key:'k2',title:'res2',type:'circle'},
+  {key:'k3',title:'res3',type:'circle'},
+  {key:'k4',title:'res4',type:'circle'},
+  {key:'k5',title:'res5',type:'circle'},
     {key:'sup',title:'sup',type:'circle'},
     {key:'res',title:'res',type:'circle'},
     {key:'keyLevel',title:'res',type:'circle',
@@ -249,17 +254,20 @@ const drawSupres = {
       return {
         color:'white'
       }
-    }
+    },
+    
   }
   ],
   calc: async (kLineDataList, { calcParams, figures }) => {
    
     return kLineDataList. map((kLineData, i) => {
-      return {
-        //sup:kLineData.support,
-       //res:kLineData.resistance,
-        keyLevel:kLineData.keyLevel
-      }
+let keyArray=kLineData.keyLevels;
+let keyObject = keyArray.reduce((obj, key, index) => {
+  obj['k' + (index + 1)] = key;
+  return obj;
+}, {});
+
+      return {...keyObject}
     })
 }
 };
@@ -419,8 +427,8 @@ set:{
 let currentBot =result.currentPeriod.currentOhlcvArray
 let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
        
-      this.initSubChart('chartCurrent',currentBot)
-      this.initSubChart('chartPre',preBot)
+     // this.initSubChart('chartCurrent',currentBot)
+     // this.initSubChart('chartPre',preBot)
       
       return _result.supres.ohlcvData
       },
