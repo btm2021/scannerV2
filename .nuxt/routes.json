@@ -18,10 +18,10 @@
     "chunkName": "pages/chart"
   },
   {
-    "name": "index2",
-    "path": "/index2",
-    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index2.vue",
-    "chunkName": "pages/index2"
+    "name": "chess",
+    "path": "/chess",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\chess.vue",
+    "chunkName": "pages/chess"
   },
   {
     "name": "indicator",
@@ -44,10 +44,22 @@
     "chunkName": "pages/klinechart"
   },
   {
+    "name": "smc",
+    "path": "/smc",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\smc.js",
+    "chunkName": "pages/smc"
+  },
+  {
     "name": "overlay-all",
     "path": "/overlay/all",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\overlay\\\\all.js",
     "chunkName": "pages/overlay/all"
+  },
+  {
+    "name": "util-autoTrendLine",
+    "path": "/util/autoTrendLine",
+    "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\util\\\\autoTrendLine.js",
+    "chunkName": "pages/util/autoTrendLine"
   },
   {
     "name": "index",

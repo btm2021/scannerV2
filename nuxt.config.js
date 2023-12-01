@@ -69,7 +69,5 @@ bootstrapVue: {
     extend(config, ctx) {
     }
   },
-  server: {
-    host: '0' // default: localhost
-  }
+
 }
