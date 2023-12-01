@@ -3,25 +3,29 @@
     "name": "a",
     "path": "/a",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\a.vue",
-    "chunkName": "pages/a"
+    "chunkName": "pages/a",
+    "_name": "_10bad6b2"
   },
   {
     "name": "analyze",
     "path": "/analyze",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\analyze.js",
-    "chunkName": "pages/analyze"
+    "chunkName": "pages/analyze",
+    "_name": "_0064fbbd"
   },
   {
     "name": "chart",
     "path": "/chart",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\chart.vue",
-    "chunkName": "pages/chart"
+    "chunkName": "pages/chart",
+    "_name": "_4840c2b8"
   },
   {
     "name": "chess",
     "path": "/chess",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\chess.vue",
-    "chunkName": "pages/chess"
+    "chunkName": "pages/chess",
+    "_name": "_9dc16674"
   },
   {
     "name": "indicator",
@@ -33,38 +37,45 @@
         "name": "indicator-all",
         "path": "all",
         "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\indicator\\\\all.js",
-        "chunkName": "pages/indicator/all"
+        "chunkName": "pages/indicator/all",
+        "_name": "_6860a073"
       }
-    ]
+    ],
+    "_name": "_43ea38cc"
   },
   {
     "name": "klinechart",
     "path": "/klinechart",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\klinechart.vue",
-    "chunkName": "pages/klinechart"
+    "chunkName": "pages/klinechart",
+    "_name": "_638965ee"
   },
   {
     "name": "smc",
     "path": "/smc",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\smc.js",
-    "chunkName": "pages/smc"
+    "chunkName": "pages/smc",
+    "_name": "_1ed557a0"
   },
   {
     "name": "overlay-all",
     "path": "/overlay/all",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\overlay\\\\all.js",
-    "chunkName": "pages/overlay/all"
+    "chunkName": "pages/overlay/all",
+    "_name": "_2bfa6d98"
   },
   {
     "name": "util-autoTrendLine",
     "path": "/util/autoTrendLine",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\util\\\\autoTrendLine.js",
-    "chunkName": "pages/util/autoTrendLine"
+    "chunkName": "pages/util/autoTrendLine",
+    "_name": "_54d549ee"
   },
   {
     "name": "index",
     "path": "/",
     "component": "C:\\\\Users\\\\Admin\\\\Desktop\\\\scannerV2\\\\pages\\\\index.vue",
-    "chunkName": "pages/index"
+    "chunkName": "pages/index",
+    "_name": "_4d7d5598"
   }
 ]
