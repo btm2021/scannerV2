@@ -126,70 +126,98 @@
                               ].symbol
                             )
                           "
-                       
                         >
-                        <div   :style=" list_price_stream[
-                                (index - 1) *
-                                  Math.ceil(
-                                    Math.sqrt(list_price_stream.length - 1)
-                                  ) +
-                                  index1 -
-                                  1
-                              ]==='up'?'background-color:green':'background-color:red'">
-                                <span
-                            class="symbol_name"
-                            v-if="
-                              list_price_stream[
-                                (index - 1) *
-                                  Math.ceil(
-                                    Math.sqrt(list_price_stream.length - 1)
-                                  ) +
-                                  index1 -
-                                  1
-                              ]
-                            "
-                          >
-                            {{
-                              list_price_stream[
-                                (index - 1) *
-                                  Math.ceil(
-                                    Math.sqrt(list_price_stream.length - 1)
-                                  ) +
-                                  index1 -
-                                  1
-                              ].symbol.replace("USDT", "")
-                            }}</span
-                          >
+                          <div>
+                            <span
+                              class="symbol_name"
+                              v-if="
+                                list_price_stream[
+                                  (index - 1) *
+                                    Math.ceil(
+                                      Math.sqrt(list_price_stream.length - 1)
+                                    ) +
+                                    index1 -
+                                    1
+                                ]
+                              "
+                            >
+                              {{
+                                list_price_stream[
+                                  (index - 1) *
+                                    Math.ceil(
+                                      Math.sqrt(list_price_stream.length - 1)
+                                    ) +
+                                    index1 -
+                                    1
+                                ].symbol
+                                  .replace("USDT", "")
+                                  .replace("1000", "")
+                              }}</span
+                            >
 
-                          <br />
-                          <span
-                            v-if="
-                              list_price_stream[
-                                (index - 1) *
-                                  Math.ceil(
-                                    Math.sqrt(list_price_stream.length - 1)
-                                  ) +
-                                  index1 -
-                                  1
-                              ]
-                            "
-                          >
-                            {{
-                              list_price_stream[
-                                (index - 1) *
-                                  Math.ceil(
-                                    Math.sqrt(list_price_stream.length - 1)
-                                  ) +
-                                  index1 -
-                                  1
-                              ].markPrice
-                            }}
-                          </span></div>
-                        
+                            <br />
+                            <span
+                              :style="
+                                getStyle(
+                                  list_price_stream[
+                                    (index - 1) *
+                                      Math.ceil(
+                                        Math.sqrt(list_price_stream.length - 1)
+                                      ) +
+                                      index1 -
+                                      1
+                                  ]
+                                )
+                              "
+                              v-if="
+                                list_price_stream[
+                                  (index - 1) *
+                                    Math.ceil(
+                                      Math.sqrt(list_price_stream.length - 1)
+                                    ) +
+                                    index1 -
+                                    1
+                                ]
+                              "
+                            >
+                              {{
+                                list_price_stream[
+                                  (index - 1) *
+                                    Math.ceil(
+                                      Math.sqrt(list_price_stream.length - 1)
+                                    ) +
+                                    index1 -
+                                    1
+                                ].markPrice
+                              }}
+                            </span>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+
+                  <section v-if="dataReady">
+                    <div class="chart">
+                      <BarChart
+                        :key="barChartData"
+                        :data="barChartData"
+                        :options="barChartOptions"
+                        :height="400"
+                      />
+                    </div>
+                  </section>
+
+                  <!-- <section v-if="dataReady">
+                    <div class="chart">
+                      <radarchart
+                        :key="barChartData"
+                        :options="barChartOptions"
+                        :height="400"
+                        :dataChart="barChartData"
+                      />
+                    </div>
+                  </section> -->
                 </div>
               </div>
             </b-tab>
@@ -288,7 +316,10 @@
   </div>
 </template>
 <script>
+import BarChart from "~/components/BarChart.vue";
+import Radarchart from "~/components/radarchart.vue";
 export default {
+  components: { BarChart, Radarchart },
   computed: {
     list_price_stream() {
       if (this.$store.state.db.list_price_stream.length > 0) {
@@ -298,9 +329,35 @@ export default {
             !item.symbol.includes("_") &&
             !item.symbol.includes("BUSD") &&
             !item.symbol.includes("BNBBTC") &&
-            !item.symbol.includes("BTCDOM")
+            !item.symbol.includes("BTCDOM") &&
+            !item.symbol.includes("ETHBTC") &&
+            !item.symbol.includes("USTC")
           );
         });
+        let barChartData = {
+          labels: listSymbol.map((item) => {
+            return item.symbol;
+          }),
+          datasets: [
+            {
+              label: "Visualizaciones",
+              data: listSymbol.map((item) => {
+                return Math.floor(Math.random() * 5);
+              }),
+              backgroundColor: "rgba(20, 255, 0, 0.3)",
+              borderColor: "rgba(100, 255, 0, 1)",
+              borderWidth: 2,
+            },
+          ],
+        };
+
+        let barChartOptions = {
+          type: "horizontalBar",
+        };
+        this.barChartOptions = barChartOptions;
+        this.barChartData = barChartData;
+
+        this.dataReady = true;
         return listSymbol;
       } else {
         return [];
@@ -309,6 +366,9 @@ export default {
   },
   data() {
     return {
+      barChartOptions: {},
+      barChartData: {},
+      dataReady: false,
       listSymbol: [],
       table_felds_list_price_stream: [
         { key: "symbol", label: "symbol", sortable: true },
@@ -319,6 +379,21 @@ export default {
     };
   },
   methods: {
+    getStyle(symbol) {
+      if (symbol && symbol.status) {
+        if (symbol.status === "up") {
+          return {
+            color: "green",
+          };
+        } else {
+          return {
+            color: "red",
+          };
+        }
+      } else {
+        return "";
+      }
+    },
     scrollIntoView(event) {
       event.preventDefault();
       const href = event.target.getAttribute("href");
@@ -353,7 +428,7 @@ body {
   margin-top: 2vh;
   margin-left: 10px;
   width: 100%;
-  height: 95vh;
+  height: 50vh;
   text-align: center;
 }
 
