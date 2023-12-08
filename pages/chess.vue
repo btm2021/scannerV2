@@ -197,7 +197,7 @@
                     </tbody>
                   </table>
 
-                  <section v-if="dataReady">
+                  <!-- <section v-if="dataReady">
                     <div class="chart">
                       <BarChart
                         :key="barChartData"
@@ -206,7 +206,7 @@
                         :height="400"
                       />
                     </div>
-                  </section>
+                  </section> -->
 
                   <!-- <section v-if="dataReady">
                     <div class="chart">
@@ -222,49 +222,13 @@
               </div>
             </b-tab>
 
-            <b-tab no-body title="Binance Spot">
-              <b-card-img
-                bottom
-                src="https://picsum.photos/600/200/?image=25"
-                alt="Image 25"
-              ></b-card-img>
-              <b-card-footer>Picture 2 footer</b-card-footer>
-            </b-tab>
-
-            <b-tab no-body title="Okex">
-              <b-card-img
-                bottom
-                src="https://picsum.photos/600/200/?image=25"
-                alt="Image 25"
-              ></b-card-img>
-              <b-card-footer>Picture 2 footer</b-card-footer>
-            </b-tab>
-
-            <b-tab no-body title="Mexc">
-              <b-card-img
-                bottom
-                src="https://picsum.photos/600/200/?image=25"
-                alt="Image 25"
-              ></b-card-img>
-              <b-card-footer>Picture 2 footer</b-card-footer>
-            </b-tab>
-
-            <b-tab no-body title="Stock">
-              <b-card-img
-                bottom
-                src="https://picsum.photos/600/200/?image=25"
-                alt="Image 25"
-              ></b-card-img>
-              <b-card-footer>Picture 2 footer</b-card-footer>
-            </b-tab>
+           
 
             <b-tab no-body title="Forex">
-              <b-card-img
-                bottom
-                src="https://picsum.photos/600/200/?image=25"
-                alt="Image 25"
-              ></b-card-img>
-              <b-card-footer>Picture 2 footer</b-card-footer>
+              <forex></forex>
+            </b-tab>
+            <b-tab no-body title="StockUS">
+              <stock></stock>
             </b-tab>
           </b-tabs>
         </div>
@@ -317,9 +281,11 @@
 </template>
 <script>
 import BarChart from "~/components/BarChart.vue";
+import Forex from "~/components/forex.vue";
 import Radarchart from "~/components/radarchart.vue";
+import Stock from '~/components/stock.vue';
 export default {
-  components: { BarChart, Radarchart },
+  components: { BarChart, Radarchart, Forex, Stock },
   computed: {
     list_price_stream() {
       if (this.$store.state.db.list_price_stream.length > 0) {
@@ -428,7 +394,7 @@ body {
   margin-top: 2vh;
   margin-left: 10px;
   width: 100%;
-  height: 50vh;
+  height: 100vh;
   text-align: center;
 }
 

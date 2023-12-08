@@ -13,12 +13,12 @@
         </div>
       </template>
       <b-row class="no-gutters">
-      <b-col sm="12" lg="12">
+      <b-col sm="11" lg="11">
         <div id="chart" style="width: 100ww; height: 100vh; background-color:#171b26;"></div>
       </b-col>
-      <b-col sm="12" lg="3">
+      <b-col sm="1" lg="1">
         <b-row class="no-gutters">
-          <b-col cols="2">
+          <b-col cols="12">
             <b-button-group vertical>
               <b-button class="myBtn" @click="createOverLay('rule')" size="sm">
                 <span class="icon-KTgbfaP5"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
@@ -120,7 +120,7 @@
             </b-button-group>
           </b-col>
           <b-col style="color:white" cols="10">
-            
+<!--             
             <b-table style="color:white;font-size: 10px;text-align: center;" small  :items="tradeList" :fields="traderFileds" head-variant="light">
               <template #cell(time)="data">
         {{ $moment(data.item.time).format("HH:mm:ss") }}
@@ -128,7 +128,9 @@
       <template #cell(price)="data">
       <span :class="(!data.item.isBuyerMaker)?'text-success':'text-danger'" >{{ data.item.price }}</span>
       </template>
-            </b-table>
+            </b-table> -->
+
+
           </b-col>
           <b-col cols="12">
             <b-textarea style="width:100%" v-model="textNote" @keyup.enter="saveNote()"></b-textarea>

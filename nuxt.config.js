@@ -27,7 +27,7 @@ export default {
   ** Global CSS
   */
   css: [
-     ],
+  ],
   /*
   ** Plugins to load before mounting the App
   */
@@ -38,7 +38,7 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-   
+
   ],
   /*
   ** Nuxt.js modules
@@ -50,9 +50,9 @@ export default {
     '@nuxtjs/moment'
   ],
 
-bootstrapVue: {
-  icons: true
-},
+  bootstrapVue: {
+    icons: true
+  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
@@ -66,8 +66,13 @@ bootstrapVue: {
     /*
     ** You can extend webpack config here
     */
-    extend(config, ctx) {
+    build: {
+      extend(config, { isDev, isClient }) {
+        // chỉ thực hiện cấu hình này ở phía client
+       
+      }
     }
+
   },
 
 }
