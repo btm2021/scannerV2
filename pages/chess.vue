@@ -280,9 +280,7 @@
   </div>
 </template>
 <script>
-import BarChart from "~/components/BarChart.vue";
 import Forex from "~/components/forex.vue";
-import Radarchart from "~/components/radarchart.vue";
 import Stock from '~/components/stock.vue';
 export default {
   components: { BarChart, Radarchart, Forex, Stock },
