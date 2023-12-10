@@ -91,7 +91,7 @@
       </div>
     </b-sidebar>
     <b-row>
-      <b-col cols="6">
+      <b-col cols="4">
         <div>
           <b-tabs small pills card>
             <b-tab no-body title="Binance Future">
@@ -233,7 +233,7 @@
           </b-tabs>
         </div>
       </b-col>
-      <b-col cols="6">
+      <b-col cols="8">
         <b-card no-body>
           <b-nav
             pills
@@ -283,7 +283,7 @@
 import Forex from "~/components/forex.vue";
 import Stock from '~/components/stock.vue';
 export default {
-  components: { BarChart, Radarchart, Forex, Stock },
+  components: {  Forex, Stock },
   computed: {
     list_price_stream() {
       if (this.$store.state.db.list_price_stream.length > 0) {
