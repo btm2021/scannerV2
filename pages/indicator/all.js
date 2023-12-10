@@ -127,7 +127,7 @@ const myBot89 = {
   shortName: "myBot",
   calcParams: [14, 2],
   figures: [
-    { key: "ema1", title: "EMA5: ", type: "line" },
+    { key: "ema1", title: "EMA5: ", type: "line" ,},
     { key: "trail2", title: "Trail2: ", type: "line" },
   ],
   regenerateFigures: (params) => {
@@ -139,6 +139,7 @@ const myBot89 = {
         styles: () => {
           return {
             color: "green",
+            size:3
           };
         },
       },
@@ -149,6 +150,7 @@ const myBot89 = {
         styles: () => {
           return {
             color: "red",
+            size:3
           };
         },
       },
