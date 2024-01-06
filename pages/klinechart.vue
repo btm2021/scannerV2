@@ -225,13 +225,14 @@
     
   </b-container>
 </template>
-      
+       
 <script>
+
 import * as klinecharts from "klinecharts";
 import { rect, rule,plan,anyWaves,triangle } from './overlay/all.js'
-import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,linear } from './indicator/all.js'
+import { myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,linear,swingHighLowIndicator } from './indicator/all.js'
 const listOverLay = [rect, rule,plan,anyWaves,triangle]
-const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1]
+const listIndicator = [linear,myBot34, myBot89, donchianIndicator, zigzag, findHL, findHL1,swingHighLowIndicator]
 import calc from '~/components/calc.vue'
 import * as analyze from './analyze'
 
@@ -668,6 +669,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
 
           klinecharts.registerIndicator(drawT2)
           klinecharts.registerIndicator(drawSupres)
+          klinecharts.registerIndicator(swingHighLowIndicator)
      
           chart.setPriceVolumePrecision(optionFromExchange.pricePrecision,optionFromExchange.pricePrecision );
           chart = chart;
@@ -675,7 +677,9 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
             this.chart.resize();
           });
           this.analyzeOHLCV(data).then(data=>{
-            chart.createIndicator('mySupRes1', true, { id: 'candle_pane' })
+           chart.createIndicator('mySupRes1', true, { id: 'candle_pane' })
+
+           // chart.createIndicator('SwingHighLow', true, { id: 'candle_pane' })
             chart.applyNewData(data);
           })
           //gọi stream
@@ -707,7 +711,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
               // volume, optional field
               volume: parseFloat(message.k.v),
             };
-            this.chart.updateData(newData);
+           // this.chart.updateData(newData);
           };
         });
      

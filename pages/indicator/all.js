@@ -1,123 +1,4 @@
-// var smcIndicator1 = {
-//   name: "SMC1",
-//   shortName: "SMC1",
-//   calcParams: [15, 2],
-//   figures: [{ key: "HH", title: "HL: ", type: "text" }],
-//   calc: (data, { calcParams }) => {
-//     let lookback = calcParams[0];
-//     let lastPivotHigh = null;
-//     let lastPivotLow = null;
-//     const pivots = { HH: [], HL: [], LL: [], LH: [] };
 
-//     for (let i = lookback; i < data.length - lookback; i++) {
-//       let isHH = true;
-//       let isLL = true;
-//       for (let j = 1; j <= lookback; j++) {
-//         if (
-//           data[i - j].high >= data[i].high ||
-//           data[i + j].high >= data[i].high
-//         ) {
-//           isHH = false;
-//         }
-//         if (data[i - j].low <= data[i].low || data[i + j].low <= data[i].low) {
-//           isLL = false;
-//         }
-//       }
-
-//       if (isHH) {
-//         pivots.HH.push({ index: i, value: data[i].high });
-//       }
-//       if (isLL) {
-//         pivots.LL.push({ index: i, value: data[i].low });
-//       }
-
-//       // HL and LH are determined by comparing to previous HH and LL
-//       if (i > 0) {
-//         if (
-//           data[i].low > data[i - 1].low &&
-//           data[i - 1].low < pivots.LL[pivots.LL.length - 1]?.value
-//         ) {
-//           pivots.HL.push({ index: i, value: data[i].low });
-//         }
-//         if (
-//           data[i].high < data[i - 1].high &&
-//           data[i - 1].high > pivots.HH[pivots.HH.length - 1]?.value
-//         ) {
-//           pivots.LH.push({ index: i, value: data[i].high });
-//         }
-//       }
-//     }
-
-//     const figures = [];
-//     console.log(pivots);
-
-//     pivots.HH.forEach((pivot) => {
-//       console.log(pivot);
-//       figures.push({
-//         HH: {
-//           value: [
-//             calculateXCoordinate(pivot.index, chartDimensions),
-//             calculateYCoordinate(pivot.value, chartDimensions),
-//           ],
-//         },
-//       });
-//     });
-//     return figures;
-//   },
-// };
-
-// var smcIndicator = {
-//   name: "SMC",
-//   shortName: "SMC",
-//   calcParams: [5], // default deviation for zigzag
-//   figures: [
-//     { key: "zigzag", title: "ZigZag", type: "line" },
-//     { key: "bos", title: "BOS", type: "line" },
-//     { key: "choch", title: "CHoCH", type: "line" },
-//   ],
-//   regenerateFigures: (params) => {
-//     return [
-//       { key: "zigzag", title: "ZigZag", type: "line" },
-//       { key: "bos", title: "BOS", type: "line" },
-//       { key: "choch", title: "CHoCH", type: "line" },
-//     ];
-//   },
-//   calc: (kLineDataList, { calcParams }) => {
-//     const deviation = calcParams[0];
-//     const zigzagValues = zigzag(kLineDataList, deviation);
-//     const bosLine = [];
-//     const chochLine = [];
-//     let previousType = null;
-
-//     for (let i = 1; i < zigzagValues.length; i++) {
-//       const currentZigzag = zigzagValues[i];
-//       const previousZigzag = zigzagValues[i - 1];
-
-//       // Check for BOS and CHoCH
-//       if (currentZigzag.deviation > 0 && previousZigzag.deviation < 0) {
-//         bosLine[i] = currentZigzag.value;
-//         previousType = "BOS";
-//       } else if (currentZigzag.deviation < 0 && previousZigzag.deviation > 0) {
-//         chochLine[i] = currentZigzag.value;
-//         previousType = "CHoCH";
-//       } else {
-//         if (previousType === "BOS") {
-//           bosLine[i] = (bosLine[i - 1] + currentZigzag.value) / 2;
-//         } else if (previousType === "CHoCH") {
-//           chochLine[i] = (chochLine[i - 1] + currentZigzag.value) / 2;
-//         }
-//       }
-//     }
-
-//     return kLineDataList.map((_, i) => {
-//       return {
-//         zigzag: zigzagValues[i]?.value || null,
-//         bos: bosLine[i],
-//         choch: chochLine[i],
-//       };
-//     });
-//   },
-// };
 
 import { IndicatorsNormalized } from "@ixjb94/indicators/dist/indicators-browser"
 const ta = new IndicatorsNormalized()
@@ -127,7 +8,7 @@ const myBot89 = {
   shortName: "myBot",
   calcParams: [14, 2],
   figures: [
-    { key: "ema1", title: "EMA5: ", type: "line" ,},
+    { key: "ema1", title: "EMA5: ", type: "line", },
     { key: "trail2", title: "Trail2: ", type: "line" },
   ],
   regenerateFigures: (params) => {
@@ -139,7 +20,7 @@ const myBot89 = {
         styles: () => {
           return {
             color: "green",
-            size:3
+            size: 3
           };
         },
       },
@@ -150,7 +31,7 @@ const myBot89 = {
         styles: () => {
           return {
             color: "red",
-            size:3
+            size: 3
           };
         },
       },
@@ -265,8 +146,8 @@ const myBot34 = {
       prevEMAs[0] = currentEma;
     });
     //lig
-  emaResults = await ta.linreg(closePrices, calcParams[0])
-    
+    emaResults = await ta.linreg(closePrices, calcParams[0])
+
     // Calculate Trail2 based on the first EMA
     const t2Results = Array(emaResults.length).fill(0);
     const multi = calcParams[1]; // This is the multiplier for SL in percentage
@@ -401,7 +282,7 @@ var donchianIndicator = {
           lowestLow = Math.min(lowestLow, dataList[p].low);
         }
       }
-      //  console.log(highestHigh, lowestLow);
+      console.log(highestHigh, lowestLow);
       result.push({
         high: highestHigh,
         low: lowestLow,
@@ -563,7 +444,7 @@ var zigzag = {
           });
         }
       }
-
+      console.log(zigzag)
       return zigzag;
     }
     const zigzagValues = zigzag(kLineDataList, deviation);
@@ -822,6 +703,47 @@ var findHL = {
       }
     }
 
+    ctx.font = "normal 12px ";
+    ctx.textAlign = "center";
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = 2 // Set the line color
+
+    ctx.setLineDash([]);
+
+
+    let lastPoint = null;
+
+    for (let i = from; i < to; i++) {
+      const data = kLineDataList[i];
+
+      if (data) {
+        let x = xAxis.convertToPixel(i);
+        let y;
+        let currentPoint = null;
+
+        // Check for HH, HL, LL, LH points and set their position
+        if (data.patternType === "HH" || data.patternType === "HL" || data.patternType === "LL" || data.patternType === "LH") {
+          if (data.patternType === "HH" || data.patternType === "LH") {
+            y = yAxis.convertToPixel(data.high);
+            ctx.fillStyle = "red"; // Color for HH and LH
+          } else {
+            y = yAxis.convertToPixel(data.low);
+            ctx.fillStyle = "green"; // Color for HL and LL
+          }
+
+          currentPoint = { x, y };
+          // Connect the current point with the last point
+          if (lastPoint) {
+            ctx.beginPath();
+            ctx.moveTo(lastPoint.x, lastPoint.y);
+            ctx.lineTo(currentPoint.x, currentPoint.y);
+            ctx.stroke();
+          }
+
+          lastPoint = currentPoint;
+        }
+      }
+    }
     return true;
   },
 };
@@ -914,4 +836,245 @@ function findPivotPatterns(pivotHighs, pivotLows) {
   return { HH, LH, HL, LL };
 }
 
-export { linear, myBot34, myBot89, donchianIndicator, zigzag, supres, findHL, findHL1 };
+
+var swingHighLowIndicator = {
+  name: "SwingHighLow",
+  shortName: "SwingHL",
+
+  calcParams: [12, 3], // Ví dụ: 5 bars bên trái, 3 bars bên phải
+  figures: [
+    { key: "SW", title: "SW: ", type: "circle" },
+    { key: "SL", title: "SL: ", type: "circle" },
+  ],
+
+  calc: (data, { calcParams }) => {
+    const [leftBar, rightBar] = calcParams;
+    const swingLows = [];
+    const swingHighs = [];
+
+    for (let i = leftBar; i < data.length - rightBar; i++) {
+      let isSwingLow = true;
+      let isSwingHigh = true;
+
+      for (let j = -leftBar; j <= rightBar; j++) {
+        if (data[i + j].low < data[i].low) {
+          isSwingLow = false;
+        }
+        if (data[i + j].high > data[i].high) {
+          isSwingHigh = false;
+        }
+      }
+
+      if (isSwingLow) {
+        swingLows.push({ index: i, value: data[i].low });
+      }
+      if (isSwingHigh) {
+        swingHighs.push({ index: i, value: data[i].high });
+      }
+    }
+
+    return { swingLows, swingHighs };
+  },
+
+  draw: ({
+    kLineDataList,
+    ctx,
+    barSpace,
+    visibleRange,
+    indicator,
+    xAxis,
+    yAxis,
+  }) => {
+    const { swingLows, swingHighs } = indicator.result;
+
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = 'green'; // Màu cho đường nối
+    ctx.lineWidth = 3
+
+    // Vẽ text cho Swing Lows
+    swingLows.forEach((low) => {
+      const x = xAxis.convertToPixel(low.index);
+      const y = yAxis.convertToPixel(low.value);
+      ctx.fillText("SL", x, y); // Vẽ text "SL"
+    });
+
+    // Vẽ text cho Swing Highs
+    swingHighs.forEach((high) => {
+      const x = xAxis.convertToPixel(high.index);
+      const y = yAxis.convertToPixel(high.value);
+      ctx.fillText("SH", x, y); // Vẽ text "SH"
+    });
+
+
+    let swingPoints = swingLows.concat(swingHighs);
+    // // Sắp xếp các điểm theo thứ tự xuất hiện trên biểu đồ
+    swingPoints.sort((a, b) => a.index - b.index);
+    let filteredSwingPoints = [];
+    let lastPointType = null;
+
+    for (let i = 0; i < swingPoints.length; i++) {
+      let currentPoint = swingPoints[i];
+      let currentPointType = swingLows.includes(currentPoint) ? 'SL' : 'SH';
+
+      if (lastPointType === null || lastPointType !== currentPointType) {
+        // Nếu điểm hiện tại và điểm trước đó khác loại (SH/SL), thêm vào danh sách lọc
+        filteredSwingPoints.push(currentPoint);
+        lastPointType = currentPointType;
+      } else {
+        // Nếu hai điểm liên tiếp cùng loại, bỏ qua điểm đầu tiên và thêm điểm thứ hai
+        if (i + 1 < swingPoints.length) {
+          filteredSwingPoints.push(swingPoints[i + 1]);
+          lastPointType = currentPointType;
+          i++; // Tăng chỉ số để bỏ qua kiểm tra điểm tiếp theo
+        }
+      }
+    }
+   // swingPoints = filteredSwingPoints
+  
+    for (let i = 0; i < swingPoints.length - 1; i++) {
+      const currentPoint = swingPoints[i];
+      const nextPoint = swingPoints[i + 1];
+
+      // Vẽ text tại mỗi điểm
+      const x = xAxis.convertToPixel(currentPoint.index);
+      const y = yAxis.convertToPixel(currentPoint.value);
+      const text = currentPoint.value === swingLows.find(p => p.index === currentPoint.index)?.value ? "SL" : "SH";
+      ctx.fillText(text, x, y);
+
+      // Nối điểm hiện tại với điểm tiếp theo
+      const nextX = xAxis.convertToPixel(nextPoint.index);
+      const nextY = yAxis.convertToPixel(nextPoint.value);
+      ctx.moveTo(x, y);
+      ctx.lineTo(nextX, nextY);
+    }
+
+    ctx.stroke();
+
+    return true;
+  },
+
+  // draw: ({
+  //   kLineDataList,
+  //   ctx,
+  //   barSpace,
+  //   visibleRange,
+  //   indicator,
+  //   xAxis,
+  //   yAxis,
+  // }) => {
+  //   const { swingLows, swingHighs } = indicator.result;
+  
+  //   let swingPoints = swingLows.concat(swingHighs);
+  //   // Sắp xếp các điểm theo thứ tự xuất hiện trên biểu đồ
+  //   swingPoints.sort((a, b) => a.index - b.index);
+  
+  //   // Lọc các điểm SH và SL để chúng xen kẽ nhau
+  //   let filteredSwingPoints = [];
+  //   let lastPointType = null;
+  
+  //   for (let i = 0; i < swingPoints.length; i++) {
+  //     let currentPoint = swingPoints[i];
+  //     let currentPointType = swingLows.includes(currentPoint) ? 'SL' : 'SH';
+  
+  //     if (lastPointType === null || lastPointType !== currentPointType) {
+  //       filteredSwingPoints.push(currentPoint);
+  //       lastPointType = currentPointType;
+  //     } else {
+  //       // Nếu hai điểm liên tiếp cùng loại, loại bỏ điểm đầu tiên và chọn điểm thứ hai
+  //       if (i  < swingPoints.length) {
+  //         i++; // Tăng chỉ số để bỏ qua điểm hiện tại
+  //       }
+  //     }
+  //   }
+  
+  //   ctx.beginPath();
+  //   ctx.strokeStyle = 'white'; // Màu cho đường nối
+  
+  //   // Vẽ và nối các điểm đã lọc
+  //   for (let i = 0; i < filteredSwingPoints.length - 1; i++) {
+  //     const currentPoint = filteredSwingPoints[i];
+  //     const nextPoint = filteredSwingPoints[i + 1];
+  
+  //     // Vẽ text tại mỗi điểm
+  //     const x = xAxis.convertToPixel(currentPoint.index);
+  //     const y = yAxis.convertToPixel(currentPoint.value);
+  //     const text = swingLows.includes(currentPoint) ? "L" : "H";
+  //     ctx.fillText(text, x, y);
+  
+  //     // Nối điểm hiện tại với điểm tiếp theo
+  //     const nextX = xAxis.convertToPixel(nextPoint.index);
+  //     const nextY = yAxis.convertToPixel(nextPoint.value);
+  //     ctx.moveTo(x, y);
+  //     ctx.lineTo(nextX, nextY);
+  //   }
+  
+  //   ctx.stroke();
+  //   return true;
+  // },
+  // draw: ({
+  //   kLineDataList,
+  //   ctx,
+  //   barSpace,
+  //   visibleRange,
+  //   indicator,
+  //   xAxis,
+  //   yAxis,
+  // }) => {
+  //   const { swingLows, swingHighs } = indicator.result;
+  
+  //   let swingPoints = swingLows.concat(swingHighs);
+  //   // Sắp xếp các điểm theo thứ tự xuất hiện trên biểu đồ
+  //   swingPoints.sort((a, b) => a.index - b.index);
+  
+  //   // Lọc các điểm SH và SL để chúng xen kẽ nhau
+  //   let filteredSwingPoints = [];
+  //   let lastPointType = null;
+  
+  //   for (let i = 0; i < swingPoints.length; i++) {
+  //     let currentPoint = swingPoints[i];
+  //     let currentPointType = swingLows.includes(currentPoint) ? 'SL' : 'SH';
+  
+  //     if (lastPointType === null || lastPointType !== currentPointType) {
+  //       filteredSwingPoints.push(currentPoint);
+  //       lastPointType = currentPointType;
+  //     } else {
+  //       // Nếu hai điểm liên tiếp cùng loại, loại bỏ điểm đầu tiên và chọn điểm thứ hai
+  //       if (i + 1 < swingPoints.length) {
+  //         i++; // Tăng chỉ số để bỏ qua điểm hiện tại
+  //       }
+  //     }
+  //   }
+  
+  //   ctx.beginPath();
+  //   ctx.strokeStyle = 'blue'; // Màu cho đường nối
+  
+  //   // Vẽ và nối các điểm đã lọc
+  //   for (let i = 0; i < filteredSwingPoints.length - 1; i++) {
+  //     const currentPoint = filteredSwingPoints[i];
+  //     const nextPoint = filteredSwingPoints[i + 1];
+  
+  //     // Vẽ text tại mỗi điểm
+  //     const x = xAxis.convertToPixel(currentPoint.index);
+  //     const y = yAxis.convertToPixel(currentPoint.value);
+  //     const text = swingLows.includes(currentPoint) ? "SL" : "SH";
+  //     ctx.fillText(text, x, y);
+  
+  //     // Nối điểm hiện tại với điểm tiếp theo bằng đường thẳng
+  //     const nextX = xAxis.convertToPixel(nextPoint.index);
+  //     const nextY = yAxis.convertToPixel(nextPoint.value);
+  //     ctx.moveTo(x, y);
+  //     ctx.lineTo(nextX, nextY);
+  //   }
+  
+  //   ctx.stroke();
+  //   return true;
+  // },
+ 
+  
+  
+};
+
+
+
+export { linear, myBot34, myBot89, donchianIndicator, zigzag, supres, findHL, findHL1, swingHighLowIndicator };
