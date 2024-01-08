@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div> <b-nav>
+    <b-nav-item v-b-toggle.priceStream >Coin</b-nav-item>
+    <b-nav-item>Forex</b-nav-item>
+    <b-nav-item>Stock</b-nav-item>
+  </b-nav>
     <b-modal id="modal-config"> </b-modal>
     <b-modal id="modal-calc">
       <div>
@@ -90,32 +94,57 @@
         ></b-img>
       </div>
     </b-sidebar>
-    <b-row>
-      <b-col cols="4">
-        <div>
-          <b-tabs small pills card>
-            <b-tab no-body title="Binance Future">
-              <div id="main">
-                <div
-                  class="boardWrapper"
-                  id="myTable"
-                  v-if="list_price_stream.length > 0"
-                >
-                  <table role="grid" class="board" id="chessBoard">
-                    <tbody>
-                      <tr
-                        v-for="index in Math.ceil(
-                          Math.sqrt(list_price_stream.length - 1)
-                        ) - 1"
-                        :key="index"
+    <b-sidebar id="sidebar-1" title="Sidebar" shadow>
+      <div>
+        <b-tabs small pills card>
+          <b-tab no-body title="Binance Future">
+            <div id="main">
+              <div
+                class="boardWrapper"
+                id="myTable"
+                v-if="list_price_stream.length > 0"
+              >
+                <table role="grid" class="board" id="chessBoard">
+                  <tbody>
+                    <tr
+                      v-for="index in Math.ceil(
+                        Math.sqrt(list_price_stream.length - 1)
+                      ) - 1"
+                      :key="index"
+                    >
+                      <td
+                        v-for="index1 in Math.ceil(
+                          Math.sqrt(list_price_stream.length)
+                        )"
+                        :key="index1"
+                        @click="
+                          onChoiceSymbol(
+                            list_price_stream[
+                              (index - 1) *
+                                Math.ceil(
+                                  Math.sqrt(list_price_stream.length - 1)
+                                ) +
+                                index1 -
+                                1
+                            ].symbol
+                          )
+                        "
                       >
-                        <td
-                          v-for="index1 in Math.ceil(
-                            Math.sqrt(list_price_stream.length)
-                          )"
-                          :key="index1"
-                          @click="
-                            onChoiceSymbol(
+                        <div>
+                          <span
+                            class="symbol_name"
+                            v-if="
+                              list_price_stream[
+                                (index - 1) *
+                                  Math.ceil(
+                                    Math.sqrt(list_price_stream.length - 1)
+                                  ) +
+                                  index1 -
+                                  1
+                              ]
+                            "
+                          >
+                            {{
                               list_price_stream[
                                 (index - 1) *
                                   Math.ceil(
@@ -124,13 +153,15 @@
                                   index1 -
                                   1
                               ].symbol
-                            )
-                          "
-                        >
-                          <div>
-                            <span
-                              class="symbol_name"
-                              v-if="
+                                .replace("USDT", "")
+                                .replace("1000", "")
+                            }}</span
+                          >
+
+                          <br />
+                          <span
+                            :style="
+                              getStyle(
                                 list_price_stream[
                                   (index - 1) *
                                     Math.ceil(
@@ -139,65 +170,37 @@
                                     index1 -
                                     1
                                 ]
-                              "
-                            >
-                              {{
-                                list_price_stream[
-                                  (index - 1) *
-                                    Math.ceil(
-                                      Math.sqrt(list_price_stream.length - 1)
-                                    ) +
-                                    index1 -
-                                    1
-                                ].symbol
-                                  .replace("USDT", "")
-                                  .replace("1000", "")
-                              }}</span
-                            >
+                              )
+                            "
+                            v-if="
+                              list_price_stream[
+                                (index - 1) *
+                                  Math.ceil(
+                                    Math.sqrt(list_price_stream.length - 1)
+                                  ) +
+                                  index1 -
+                                  1
+                              ]
+                            "
+                          >
+                            {{
+                              list_price_stream[
+                                (index - 1) *
+                                  Math.ceil(
+                                    Math.sqrt(list_price_stream.length - 1)
+                                  ) +
+                                  index1 -
+                                  1
+                              ].markPrice
+                            }}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-                            <br />
-                            <span
-                              :style="
-                                getStyle(
-                                  list_price_stream[
-                                    (index - 1) *
-                                      Math.ceil(
-                                        Math.sqrt(list_price_stream.length - 1)
-                                      ) +
-                                      index1 -
-                                      1
-                                  ]
-                                )
-                              "
-                              v-if="
-                                list_price_stream[
-                                  (index - 1) *
-                                    Math.ceil(
-                                      Math.sqrt(list_price_stream.length - 1)
-                                    ) +
-                                    index1 -
-                                    1
-                                ]
-                              "
-                            >
-                              {{
-                                list_price_stream[
-                                  (index - 1) *
-                                    Math.ceil(
-                                      Math.sqrt(list_price_stream.length - 1)
-                                    ) +
-                                    index1 -
-                                    1
-                                ].markPrice
-                              }}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <!-- <section v-if="dataReady">
+                <!-- <section v-if="dataReady">
                     <div class="chart">
                       <BarChart
                         :key="barChartData"
@@ -208,7 +211,7 @@
                     </div>
                   </section> -->
 
-                  <!-- <section v-if="dataReady">
+                <!-- <section v-if="dataReady">
                     <div class="chart">
                       <radarchart
                         :key="barChartData"
@@ -218,53 +221,32 @@
                       />
                     </div>
                   </section> -->
-                </div>
               </div>
-            </b-tab>
+            </div>
+          </b-tab>
 
-           
-
-            <b-tab no-body title="Forex">
-              <forex></forex>
-            </b-tab>
-            <b-tab no-body title="StockUS">
-              <stock></stock>
-            </b-tab>
-          </b-tabs>
-        </div>
-      </b-col>
-      <b-col cols="8">
+          <b-tab no-body title="Forex">
+            <forex></forex>
+          </b-tab>
+          <b-tab no-body title="StockUS">
+            <stock></stock>
+          </b-tab>
+        </b-tabs>
+      </div>
+    </b-sidebar>
+    <b-row>
+      <b-col cols="4"> </b-col>
+      <b-col cols="12">
         <b-card no-body>
-          <b-nav
-            pills
-            card-header
-            slot="header"
-            size="sm"
-            v-b-scrollspy:nav-scroller
-          >
-            <b-nav-item href="#m5" @click="scrollIntoView">M5</b-nav-item>
-            <b-nav-item href="#m15" @click="scrollIntoView">M15</b-nav-item>
-            <b-nav-item href="#h1" @click="scrollIntoView">1H</b-nav-item>
-            <b-nav-item href="#h4" @click="scrollIntoView">4H</b-nav-item>
-            <b-nav-item v-b-toggle.modal-calc>Calc</b-nav-item>
-            <b-nav-item v-b-toggle.priceStream>Giá</b-nav-item>
-            <b-nav-item v-b-toggle.modal-config>Config</b-nav-item>
-          </b-nav>
           <b-card-body
             id="nav-scroller"
             ref="content"
             style="position: relative; overflow-y: scroll; height: 650px"
             :key="choiceSymbol"
           >
-            <!-- <h4 id="m5">M5 {{ choiceSymbol }}</h4>
+            <h4 id="m5">M5 {{ choiceSymbol }}</h4>
             <iframe
               :src="`\klinechart?symbol=${choiceSymbol}&timeframe=5m&exchange=binance`"
-              style="width: 99%; border: 0px; height: 650px; border: 0px"
-            ></iframe> -->
-
-            <h4 id="m15">M15 {{ choiceSymbol }}</h4>
-            <iframe
-              :src="`\klinechart?symbol=${choiceSymbol}&timeframe=15m&exchange=binance`"
               style="
                 width: 99%;
                 border: 0px;
@@ -281,9 +263,9 @@
 </template>
 <script>
 import Forex from "~/components/forex.vue";
-import Stock from '~/components/stock.vue';
+import Stock from "~/components/stock.vue";
 export default {
-  components: {  Forex, Stock },
+  components: { Forex, Stock },
   computed: {
     list_price_stream() {
       if (this.$store.state.db.list_price_stream.length > 0) {

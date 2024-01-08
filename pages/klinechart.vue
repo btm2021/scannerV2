@@ -467,7 +467,7 @@ let preBot = result.periodBot[result.periodBot.length - 1].ohlcvArray;
         query: [
           {
            timeframe:this.timeframe,
-           symbol:this.symbol
+           symbol:String(this.symbol).toUpperCase()
           },
         ],
         sort:'time'
